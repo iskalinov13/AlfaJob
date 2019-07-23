@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_24px_outlined"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_vacancy"
+            android:icon="@drawable/ic_vacancy"
+            android:title="@string/menu_vacancy" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/menu_settings"/>
+        <item
+            android:id="@+id/nav_aproved_resumes"
+            android:icon="@drawable/ic_approve"
+            android:title="@string/menu_approved_resumes" />
+        <item
+            android:id="@+id/nav_import_files"
+            android:icon="@drawable/ic_savefile"
+            android:title="@string/menu_import_files" />
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/menu_sign_out" />
+    </group>
+
+</menu>

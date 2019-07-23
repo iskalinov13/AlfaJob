@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "136402705420",
+    "firebase_url": "https://alfajob-37474.firebaseio.com",
+    "project_id": "alfajob-37474",
+    "storage_bucket": "alfajob-37474.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136402705420:android:ad2457dd58bd6768",
+        "android_client_info": {
+          "package_name": "com.example.alfajob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "136402705420-8r4av8l768ut54i9cj81ooght3rl6cac.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alfajob",
+            "certificate_hash": "dfc2e569898772cc1aa4b39380b3b8de72be5943"
+          }
+        },
+        {
+          "client_id": "136402705420-0jskosvq9nk8lgclqt994e271v4fijih.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_zORJIjDKuY2BAbgj_ACYRgkNDNMJ3rs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "136402705420-0jskosvq9nk8lgclqt994e271v4fijih.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

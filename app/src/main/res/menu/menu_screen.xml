@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/vacancies" android:title="Vacancies" android:icon="@drawable/ic_vacancy"/>
+    <item android:id="@+id/settings" android:title="Account Settings" android:icon="@drawable/ic_settings"/>
+    <item android:id="@+id/approve" android:title="Approved Resumes" android:icon="@drawable/ic_approve"/>
+    <item android:id="@+id/importFiles" android:title="Import Files" android:icon="@drawable/ic_savefile"/>
+    <item android:id="@+id/logount" android:title="Log Out" android:icon="@drawable/ic_logout"/>
+
+</menu>

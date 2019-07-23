@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.RegistrationActivity">
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/description"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/img_header" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/roboto"
+        android:gravity="center_horizontal|top"
+        android:text="@string/sign_up"
+        android:textAppearance="@style/sign_in"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linear_login_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/bcg_login_items"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title">
+
+        <LinearLayout
+            android:id="@+id/linearLayout_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/username"
+                android:textAppearance="@style/email"
+                tools:layout_conversion_absoluteHeight="24dp"
+                tools:layout_conversion_absoluteWidth="280dp"
+                tools:layout_editor_absoluteX="21dp"
+                tools:layout_editor_absoluteY="88dp" />
+
+            <EditText
+                android:id="@+id/reg_editText_username"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/bcg_edit_email"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:padding="5dp"
+                tools:ignore="Autofill"
+                tools:layout_conversion_absoluteHeight="65dp"
+                tools:layout_conversion_absoluteWidth="280dp"
+                tools:layout_editor_absoluteX="21dp"
+                tools:layout_editor_absoluteY="112dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/email"
+                android:textAppearance="@style/email"
+                tools:layout_conversion_absoluteHeight="24dp"
+                tools:layout_conversion_absoluteWidth="280dp"
+                tools:layout_editor_absoluteX="21dp"
+                tools:layout_editor_absoluteY="88dp" />
+
+            <EditText
+                android:id="@+id/reg_editText_email"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/bcg_edit_email"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:padding="5dp"
+                tools:ignore="Autofill"
+                tools:layout_conversion_absoluteHeight="65dp"
+                tools:layout_conversion_absoluteWidth="280dp"
+                tools:layout_editor_absoluteX="21dp"
+                tools:layout_editor_absoluteY="112dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/password"
+                android:textAppearance="@style/password"
+                tools:layout_conversion_absoluteHeight="24dp"
+                tools:layout_conversion_absoluteWidth="280dp"
+                tools:layout_editor_absoluteX="21dp"
+                tools:layout_editor_absoluteY="88dp" />
+
+            <EditText
+                android:id="@+id/reg_editText_password"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/bcg_edit_email"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:padding="5dp"
+                tools:ignore="Autofill"
+                tools:layout_conversion_absoluteHeight="65dp"
+                tools:layout_conversion_absoluteWidth="280dp"
+                tools:layout_editor_absoluteX="21dp"
+                tools:layout_editor_absoluteY="112dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/confirm_password"
+                android:textAppearance="@style/password"
+                tools:layout_conversion_absoluteHeight="24dp"
+                tools:layout_conversion_absoluteWidth="280dp"
+                tools:layout_editor_absoluteX="21dp"
+                tools:layout_editor_absoluteY="88dp" />
+
+            <EditText
+                android:id="@+id/reg_editText_confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/bcg_edit_email"
+                android:ems="10"
+                android:inputType="textPassword"
+                android:padding="5dp"
+                tools:ignore="Autofill"
+                tools:layout_conversion_absoluteHeight="65dp"
+                tools:layout_conversion_absoluteWidth="280dp"
+                tools:layout_editor_absoluteX="21dp"
+                tools:layout_editor_absoluteY="112dp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_signup"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/bcg_button_login"
+            android:text="@string/btn_signup"
+            android:textColor="#F0FFFFFF"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView_alreadyhave"
+        android:layout_width="210dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_thin"
+        android:gravity="center_horizontal|top"
+        android:text="@string/already_have"
+        android:textAppearance="@style/don_t_have_"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear_login_content" />
+
+    <TextView
+        android:id="@+id/textView_signin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/roboto"
+        android:gravity="center_horizontal|top"
+        android:text="@string/signin"
+        android:textAppearance="@style/register"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_alreadyhave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.205"
+        app:layout_constraintStart_toEndOf="@+id/textView_alreadyhave"
+        app:layout_constraintTop_toTopOf="@+id/textView_alreadyhave"
+        app:layout_constraintVertical_bias="1.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

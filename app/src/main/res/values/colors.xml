@@ -5,4 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorTextPrimary">#9A9292</color>
     <color name="colorFloatButton">#EA5858</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="grey">#404040</color>
+    <color name="colorTextNewCV">#938B8B</color>
 </resources>

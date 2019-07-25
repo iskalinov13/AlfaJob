@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.alfajob.Fragments.FragmentHome;
+import com.example.alfajob.Fragments.FragmentHomeUser;
 import com.example.alfajob.Fragments.FragmentVacancies;
 import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
@@ -80,9 +81,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         tvNavHeaderEmail = (TextView) headerView.findViewById(R.id.tv_nav_header_email);
 
         mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
-        Fragment fragment = new FragmentHome();
+        Fragment fragment = null;
+
+        if(currentUser.getEmail().toString().equals("iskalinov133@gmail.com")){
+            fragment = new FragmentHome();
+        }
+        else{
+            fragment = new FragmentHomeUser();
+        }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, fragment);
         ft.commit();
@@ -141,8 +150,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
         if (currentUser != null) {
 
             final String userEmail = currentUser.getEmail().toString();
@@ -185,6 +192,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -220,7 +228,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_home) {
             getSupportActionBar().setTitle(item.getTitle());
-            fragment = new FragmentHome();
+
+            if(currentUser.getEmail().toString().equals("iskalinov133@gmail.com")){
+                fragment = new FragmentHome();
+            }
+            else{
+                fragment = new FragmentHomeUser();
+            }
+
         } else if (id == R.id.nav_vacancy) {
             getSupportActionBar().setTitle(item.getTitle());
             fragment = new FragmentVacancies();

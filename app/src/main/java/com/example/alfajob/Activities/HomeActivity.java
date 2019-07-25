@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,13 +85,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         Fragment fragment = null;
-
-        if(currentUser.getEmail().toString().equals("iskalinov133@gmail.com")){
-            fragment = new FragmentHome();
+        if(currentUser!=null){
+            if(currentUser.getEmail().toString().equals("iskalinov133@gmail.com")){
+                fab.hide();
+                fragment = new FragmentHome();
+            }
+            else{
+                fab.show();
+                fragment = new FragmentHomeUser();
+            }
         }
         else{
-            fragment = new FragmentHomeUser();
+            sentToLoginActivity();
         }
+
+
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, fragment);
         ft.commit();

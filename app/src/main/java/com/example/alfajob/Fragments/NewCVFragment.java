@@ -31,6 +31,7 @@ import java.util.List;
 public class NewCVFragment extends Fragment {
     View v;
     private RecyclerView myrecyclerView;
+
     private List<NewCV> listNewCV = new ArrayList<>();
 
     FirebaseFirestore db;
@@ -115,8 +116,9 @@ public class NewCVFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-
     }
+
+
 
 
 }

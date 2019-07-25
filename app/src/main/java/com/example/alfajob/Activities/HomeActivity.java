@@ -89,10 +89,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             if(currentUser.getEmail().toString().equals("iskalinov133@gmail.com")){
                 fab.hide();
                 fragment = new FragmentHome();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
             }
             else{
                 fab.show();
                 fragment = new FragmentHomeUser();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
             }
         }
         else{
@@ -101,9 +107,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_frame, fragment);
-        ft.commit();
+
 
 
         searchView = (MaterialSearchView) findViewById(R.id.search_view);

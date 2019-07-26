@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +27,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener  {
@@ -91,8 +96,32 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
                                            // String userID = mDatabase.push().getKey();
                                             String userID = mAuth.getCurrentUser().getUid();
-                                            User user = new User(userId ,userName, userEmail, userPassword);
-                                            mDatabase.child(userID).setValue(user);
+                                           // User user = new User(userId ,userName, userEmail, userPassword);
+                                            //mDatabase.child(userID).setValue(user);
+                                            Map<String, String> user = new HashMap<>();
+                                            user.put("userId", userID);
+                                            user.put("userName", userName);
+                                            user.put("userEmail", userEmail);
+                                            user.put("userPassword", userPassword);
+
+
+
+                                            mFirestore.collection("users").document(userID)
+                                                    .set(user)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(RegistrationActivity.this, "Successfully registered!",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(RegistrationActivity.this, "Authentication failed.",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
 
                                             FirebaseUser fireuser = mAuth.getCurrentUser();
                                             fireuser.sendEmailVerification();

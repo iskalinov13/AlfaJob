@@ -8,6 +8,9 @@ import com.example.alfajob.Fragments.FragmentHomeUser;
 import com.example.alfajob.Fragments.FragmentVacancies;
 import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -30,6 +33,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -50,7 +56,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private MaterialSearchView searchView;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    private FirebaseFirestore mDatabase;
     private FirebaseUser currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +88,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        mDatabase = FirebaseFirestore.getInstance();
 
         Fragment fragment = null;
         if(currentUser!=null){
@@ -167,26 +173,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             final String userEmail = currentUser.getEmail().toString();
             tvNavHeaderEmail.setText(userEmail);
-            mDatabase.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                 mDatabase.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot doc : task.getResult()){
+                            String userEmail =  doc.getString("userEmail");
+                            String userName = doc.getString("userName");
+                            if (userEmail.equals(tvNavHeaderEmail.getText().toString())){
 
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                        User user = ds.getValue(User.class);
-
-                        if (user.getUserEmail().equals(tvNavHeaderEmail.getText().toString())) {
-
-                            tvNavHeaderUsername.setText(user.getUserName());
+                                tvNavHeaderUsername.setText(userName);
+                            }
                         }
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
                     }
 
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            });
+                });
         }
         else{
             sentToLoginActivity();

@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.baoyz.widget.PullRefreshLayout;
-import com.example.alfajob.Adapter.RecycleViewAdapterNewCV;
+import com.example.alfajob.Adapter.RVAdapterNewCV;
 import com.example.alfajob.Objects.NewCV;
 import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,7 +33,7 @@ public class NewCVFragment extends Fragment {
     private List<NewCV> listNewCV = new ArrayList<>();
 
     FirebaseFirestore db;
-    RecycleViewAdapterNewCV recyclerViewAdapter;
+    RVAdapterNewCV recyclerViewAdapter;
     PullRefreshLayout pullRefreshLayout;
     ProgressDialog pd;
 
@@ -97,7 +95,7 @@ public class NewCVFragment extends Fragment {
 
                             listNewCV.add(newCV);
 
-                            recyclerViewAdapter = new RecycleViewAdapterNewCV(getContext(),listNewCV);
+                            recyclerViewAdapter = new RVAdapterNewCV(getContext(),listNewCV);
                             myrecyclerView.setAdapter(recyclerViewAdapter);
                         }
                         pd.dismiss();

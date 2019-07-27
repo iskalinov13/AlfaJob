@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activities.ApplyCVActivity"
+    android:background="#FB4F51">
+
+    <EditText
+        android:id="@+id/et_applycv_title"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@color/colorWhite"
+        android:fontFamily="@font/roboto_italic"
+        android:gravity="center_vertical"
+        android:hint="@string/apply_cv_title"
+        android:paddingLeft="10dp"
+        android:shadowColor="#5C000000"
+        android:shadowDx="0"
+        android:shadowDy="8"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/et_applycv_skills"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@color/colorWhite"
+        android:fontFamily="@font/roboto_italic"
+        android:gravity="center_vertical"
+        android:hint="@string/apply_cv_skills"
+        android:paddingLeft="10dp"
+        android:shadowColor="#5C000000"
+        android:shadowDx="0"
+        android:shadowDy="8"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/et_applycv_phone"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@color/colorWhite"
+        android:fontFamily="@font/roboto_italic"
+        android:gravity="center_vertical"
+        android:hint="@string/apply_cv_phone"
+        android:paddingLeft="10dp"
+        android:shadowColor="#5C000000"
+        android:shadowDx="0"
+        android:shadowDy="8"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/ll_applycv_main"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bcg_ll_applycv"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <EditText
+            android:id="@+id/et_applycv_addcomment"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/colorWhite"
+            android:fontFamily="@font/roboto_italic"
+            android:gravity="center_vertical"
+            android:hint="@string/apply_cv_addcomment"
+            android:paddingLeft="10dp"
+            android:shadowColor="#5C000000"
+            android:shadowDx="0"
+            android:shadowDy="8"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/et_applycv_search"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bcg_edit_email"
+            android:ems="10"
+            android:inputType="text"
+            android:padding="5dp"
+            android:gravity="center_vertical"
+            tools:ignore="Autofill" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btn_applycv_choose"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/btn_send"
+                android:enabled="false"
+                android:fontFamily="@font/roboto_medium"
+                android:shadowColor="#222325"
+                android:text="Choose"
+                android:textColor="@color/grey"
+                android:textAlignment="center" />
+
+            <Button
+                android:id="@+id/btn_applycv_sendAll"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:textAlignment="center"
+                android:background="@drawable/btn_send"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Send All"
+                android:textColor="@color/grey"
+                android:enabled="false"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_applycv_invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#BEBEBE"
+                android:layout_marginRight="5dp"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_apply_send"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

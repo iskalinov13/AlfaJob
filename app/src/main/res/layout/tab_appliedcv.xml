@@ -2,12 +2,16 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:layout_width="wrap_content"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="AppliedCV Page"
-        android:textColor="@color/colorPrimary"
-        android:layout_height="wrap_content" />
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/swipeRefreshLayoutAppliedCV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/appliedcv_recyclerview" />
+
+    </com.baoyz.widget.PullRefreshLayout>
+
 </FrameLayout>

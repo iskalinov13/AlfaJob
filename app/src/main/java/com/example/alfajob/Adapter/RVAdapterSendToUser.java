@@ -1,14 +1,12 @@
 package com.example.alfajob.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alfajob.Interface.OnItemClickListener;
@@ -36,7 +34,7 @@ public class RVAdapterSendToUser extends RecyclerView.Adapter<RVAdapterSendToUse
     @NonNull
     @Override
     public RVAdapterSendToUser.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.list_item_applycv,viewGroup,false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.list_item_users,viewGroup,false);
 
         final RVAdapterSendToUser.MyViewHolder viewHolder = new RVAdapterSendToUser.MyViewHolder(v);
         db = FirebaseFirestore.getInstance();

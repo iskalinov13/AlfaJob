@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -165,9 +166,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
 
             }
-            if(!et_addComment.getText().toString().trim().equals("")){
-                cvCommentCount = "1";
-            }
 
 
         }
@@ -199,13 +197,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         Map<String, String> mUid = new HashMap<>();
         mUid.put("userId", userId);
 
-        Map<String, String> mCv = new HashMap<>();
-        mCv.put("cvTitle", cvTitle);
-        mCv.put("cvScills", cvSkills);
-        mCv.put("cvEmail", cvEmail);
-        mCv.put("cvPhone", cvPhone);
-        mCv.put("cvUrl", cvUrl);
-        mCv.put("cvCommentCount", cvCommentCount);
         db.collection("appliedcv")
                 .document(cvId)
                 .collection("userId")
@@ -253,10 +244,15 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                 });
     }
     public void callBack(){
+        if(!et_addComment.getText().toString().trim().equals("")){
+            cvCommentCount = "1";
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(ApplyCVActivity.this);
         builder.setTitle("Save");
         builder.setMessage("Do you want to save changes?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Map<String, String> mCv = new HashMap<>();
@@ -332,5 +328,15 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     @Override
     public void onBackPressed() {
         callBack();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                callBack();
+                return true;
+        }
+        return false;
     }
 }

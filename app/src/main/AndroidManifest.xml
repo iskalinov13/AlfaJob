@@ -16,8 +16,10 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.HomeActivity"/>
         </activity>
-        <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.RegistrationActivity" />
+        <activity android:name=".Activities.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Activities.RegistrationActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".Activities.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

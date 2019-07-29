@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.example.alfajob.Fragments.FragmentHome;
 import com.example.alfajob.Fragments.FragmentHomeUser;
 import com.example.alfajob.Fragments.FragmentVacancies;
+import com.example.alfajob.Interface.JsonPlaceHolderApi;
 import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,8 +48,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.view.Menu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -56,8 +64,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private MaterialSearchView searchView;
 
     private FirebaseAuth mAuth;
-    private FirebaseFirestore mDatabase;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference mDatabaseUsers;
     private FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,11 +98,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        mDatabase = FirebaseFirestore.getInstance();
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
 
         Fragment fragment = null;
         if(currentUser!=null){
-            if(currentUser.getEmail().toString().equals("iskalinov133@gmail.com")){
+            if(currentUser.getEmail().toString().equals("recruiteralfabank@gmail.com")){
                 fab.hide();
                 fragment = new FragmentHome();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -110,10 +120,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         else{
             sentToLoginActivity();
         }
-
-
-
-
 
 
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
@@ -164,7 +170,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -173,29 +178,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             final String userEmail = currentUser.getEmail().toString();
             tvNavHeaderEmail.setText(userEmail);
-                 mDatabase.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for(DocumentSnapshot doc : task.getResult()){
-                            String userEmail =  doc.getString("userEmail");
-                            String userName = doc.getString("userName");
-                            if (userEmail.equals(tvNavHeaderEmail.getText().toString())){
+            mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                tvNavHeaderUsername.setText(userName);
-                            }
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                        User user = ds.getValue(User.class);
+
+                        if (user.getUserEmail().equals(tvNavHeaderEmail.getText().toString())){
+
+                            tvNavHeaderUsername.setText(user.getUserName());
                         }
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
                     }
 
-                });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
         else{
             sentToLoginActivity();
@@ -230,12 +233,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -251,7 +248,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_home) {
             getSupportActionBar().setTitle(item.getTitle());
 
-            if(currentUser.getEmail().toString().equals("iskalinov133@gmail.com")){
+            if(currentUser.getEmail().toString().equals("recruiteralfabank@gmail.com")){
                 fragment = new FragmentHome();
             }
             else{

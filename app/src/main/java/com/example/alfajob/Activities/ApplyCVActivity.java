@@ -23,21 +23,19 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.alfajob.Adapter.RVAdapterNewCV;
 import com.example.alfajob.Adapter.RVAdapterSendToUser;
 import com.example.alfajob.Interface.OnItemClickListener;
-import com.example.alfajob.Objects.NewCV;
 import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +47,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     public Bundle extras;
     public List<User> listUsers;
     public RVAdapterSendToUser rvAdapter;
-    public FirebaseFirestore db;
+    public DatabaseReference mDatabaseAppliedcv, mDatabaseSendToUsers, mDatabaseUsers, mDatabaseNewcv;
 
     public EditText et_cvTitle, et_cvSkills, et_cvPhone;
     public EditText et_addComment, et_search;
@@ -102,7 +100,10 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         rvAdapter.setClickListener(this);
 
         // db init
-        db = FirebaseFirestore.getInstance();
+        mDatabaseAppliedcv = FirebaseDatabase.getInstance().getReference("appliedcv");
+        mDatabaseSendToUsers = FirebaseDatabase.getInstance().getReference().child("send");
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("users");
+        mDatabaseNewcv= FirebaseDatabase.getInstance().getReference().child("newcv");
 
         // Action bat style
         ActionBar bar = getSupportActionBar();
@@ -179,6 +180,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     @Override
     public void onClick(View view, int position) {
         String cvUserId = listUsers.get(position).getUserId();
+        System.out.println(cvUserId+"hello!!!");
         switch(view.getId()) {
             case R.id.btn_applycv_send:
                 Button btn_send = view.findViewById(R.id.btn_applycv_send);
@@ -186,22 +188,16 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                 btn_send.setTextColor(Color.parseColor("#000000"));
                 btn_send.setText("Sent");
                 saveappliedCV(cvUserId);
-
                 break;
         }
 
-        System.out.println(view.getId());
     }
 
     public void saveappliedCV(String userId){
-        Map<String, String> mUid = new HashMap<>();
-        mUid.put("userId", userId);
-
-        db.collection("appliedcv")
-                .document(cvId)
-                .collection("userId")
-                .document(userId)
-                .set(mUid)
+        mDatabaseSendToUsers
+                .child(cvId)
+                .child(userId)
+                .setValue(userId)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -217,31 +213,26 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
     }
 
+
     public void initializeUsers(){
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        listUsers.clear();
-                        for(DocumentSnapshot doc : task.getResult()){
-                            User user = new User(doc.getId(),
-                                    doc.getString("userName"),
-                                    doc.getString("userEmail"),
-                                    doc.getString("userPassword"));
 
-                            listUsers.add(user);
+        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listUsers.clear();
+                for (DataSnapshot childSnap : dataSnapshot.getChildren()) {
+                    User user = childSnap.getValue(User.class);
+                    System.out.println(user.getUserEmail()+"hello");
+                    listUsers.add(user);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                    }
+            }
+        });
 
-                });
     }
     public void callBack(){
         if(!et_addComment.getText().toString().trim().equals("")){
@@ -264,27 +255,19 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                 mCv.put("cvCommentCount", cvCommentCount);
                 mCv.put("cvStarCount", "0");
 
-                db.collection("appliedcv")
-                        .document(cvId)
-                        .set(mCv)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                DatabaseReference rootAppliedcv = mDatabaseAppliedcv.child(cvId);
+                rootAppliedcv.child("cvTitle").setValue(cvTitle);
+                rootAppliedcv.child("cvSkills").setValue(cvSkills);
+                rootAppliedcv.child("cvEmail").setValue(cvEmail);
+                rootAppliedcv.child("cvPhone").setValue(cvPhone);
+                rootAppliedcv.child("cvUrl").setValue(cvUrl);
+                rootAppliedcv.child("cvCommentCount").setValue(cvCommentCount);
+                rootAppliedcv.child("cvStarCount").setValue("0");
+
+                mDatabaseNewcv.child(cvId).removeValue()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("Success", "DocumentSnapshot successfully written!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("Fail", "Error writing document!", e);
-                            }
-                        });
-                db.collection("newcv")
-                        .document(cvId)
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
+                            public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("Success", "DocumentSnapshot successfully deleted!");
                             }
                         })
@@ -294,6 +277,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                                 Log.w("Fail", "Error deleting document", e);
                             }
                         });
+
                 dialog.dismiss();
                 ApplyCVActivity.this.finish();
             }
@@ -302,12 +286,10 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                db.collection("appliedcv")
-                        .document(cvId)
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                mDatabaseAppliedcv.child(cvId).removeValue()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onSuccess(Void aVoid) {
+                            public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("Success", "DocumentSnapshot successfully deleted!");
                             }
                         })
@@ -317,6 +299,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                                 Log.w("Fail", "Error deleting document", e);
                             }
                         });
+
 
                 dialog.dismiss();
                 ApplyCVActivity.this.finish();

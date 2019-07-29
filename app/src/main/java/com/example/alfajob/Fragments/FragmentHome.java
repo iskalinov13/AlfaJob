@@ -112,7 +112,7 @@ public class FragmentHome extends Fragment {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String userEmail = currentUser.getEmail().toString();
 
-        if (userEmail.equals("iskalinov133@gmail.com")) {
+        if (userEmail.equals("recruiteralfabank@gmail.com")) {
 
         }
 

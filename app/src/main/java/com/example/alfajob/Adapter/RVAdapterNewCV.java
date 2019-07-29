@@ -28,6 +28,8 @@ import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -35,7 +37,7 @@ import java.util.List;
 public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHolder> implements ActivityCompat.OnRequestPermissionsResultCallback  {
     Context mContext;
     List<NewCV> mData;
-    FirebaseFirestore db;
+    DatabaseReference mDatabaseNewcv;
     String phoneNumber;
 
     private static final int  REQUEST_CALL = 1;
@@ -51,7 +53,7 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
         View v;
         v = LayoutInflater.from(mContext).inflate(R.layout.list_item_newcv,viewGroup,false);
         final MyViewHolder viewHolder = new MyViewHolder(v);
-        db = FirebaseFirestore.getInstance();
+        mDatabaseNewcv = FirebaseDatabase.getInstance().getReference("newcv");
 
 
           viewHolder.btn_view.setOnClickListener(new View.OnClickListener() {
@@ -98,27 +100,49 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
                           final int position = viewHolder.getAdapterPosition();
                           Toast.makeText(mContext, position+"", Toast.LENGTH_SHORT).show();
 
-                          db.collection("newcv").document(mData.get(position).getId())
-                                  .delete()
+                          mDatabaseNewcv.child(mData.get(position).getId()).removeValue()
                                   .addOnCompleteListener(new OnCompleteListener<Void>() {
                                       @Override
                                       public void onComplete(@NonNull Task<Void> task) {
-                                          if(mData.size()!=0){
+                                          if (position!= 0) {
+                                              Toast.makeText(mContext, position+"DELETED", Toast.LENGTH_SHORT).show();
                                               mData.remove(position);
-                                              notifyDataSetChanged();
-
+                                              notifyItemRemoved(position);
+                                          }
+                                          else {
+                                              Toast.makeText(mContext, "not in bounds", Toast.LENGTH_SHORT).show();
                                           }
 
-                                          Toast.makeText(mContext, "Successfully deleted ...", Toast.LENGTH_SHORT).show();
                                       }
                                   })
                                   .addOnFailureListener(new OnFailureListener() {
                                       @Override
                                       public void onFailure(@NonNull Exception e) {
-
                                           Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
                                       }
                                   });
+
+//                          db.collection("newcv").document(mData.get(position).getId()).
+//                                  .delete()
+//                                  .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                      @Override
+//                                      public void onComplete(@NonNull Task<Void> task) {
+//                                          if(mData.size()!=0){
+//                                              mData.remove(position);
+//                                              notifyDataSetChanged();
+//
+//                                          }
+//
+//                                          Toast.makeText(mContext, "Successfully deleted ...", Toast.LENGTH_SHORT).show();
+//                                      }
+//                                  })
+//                                  .addOnFailureListener(new OnFailureListener() {
+//                                      @Override
+//                                      public void onFailure(@NonNull Exception e) {
+//
+//                                          Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                                      }
+//                                  });
 
                       }
                   });
@@ -175,6 +199,7 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
 
     }
 
+
     private void makePhoneCall(String phonenumber){
         String phoneN = phonenumber;
         phoneNumber = "";
@@ -221,6 +246,10 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
 
     @Override
     public int getItemCount() {
+        if (mData == null) {
+            return 0;
+        }
+
         return mData.size();
     }
 

@@ -37,11 +37,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private FirebaseFirestore mFirestore;
     private DatabaseReference mDatabase;
 
-
     private EditText editUserName, editEmail, editPassword, editConfirmPassword;
     private Button btnSignUp;
     private TextView textLogIn;
-
     private String userId;
 
     @Override
@@ -92,36 +90,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-
-
-                                           // String userID = mDatabase.push().getKey();
-                                            String userID = mAuth.getCurrentUser().getUid();
-                                           // User user = new User(userId ,userName, userEmail, userPassword);
-                                            //mDatabase.child(userID).setValue(user);
-                                            Map<String, String> user = new HashMap<>();
-                                            user.put("userId", userID);
-                                            user.put("userName", userName);
-                                            user.put("userEmail", userEmail);
-                                            user.put("userPassword", userPassword);
-
-
-
-                                            mFirestore.collection("users").document(userID)
-                                                    .set(user)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            Toast.makeText(RegistrationActivity.this, "Successfully registered!",
-                                                                    Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(RegistrationActivity.this, "Authentication failed.",
-                                                                    Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
+                                            String userID = mDatabase.push().getKey();;
+                                            User user = new User(userID ,userName, userEmail, userPassword);
+                                            mDatabase.child(userID).setValue(user);
 
                                             FirebaseUser fireuser = mAuth.getCurrentUser();
                                             fireuser.sendEmailVerification();
@@ -132,7 +103,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                                             Toast.makeText(RegistrationActivity.this, "Authentication failed.",
                                                     Toast.LENGTH_SHORT).show();
                                         }
-                                        // ...
                                     }
                                 });
                     }

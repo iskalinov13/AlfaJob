@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,25 +15,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.example.alfajob.Adapter.RVAdapterNewCV;
+import com.example.alfajob.Interface.JsonPlaceHolderApi;
 import com.example.alfajob.Objects.NewCV;
 import com.example.alfajob.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewCVFragment extends Fragment {
     View v;
     private RecyclerView myrecyclerView;
 
     private List<NewCV> listNewCV = new ArrayList<>();
+    private JsonPlaceHolderApi jsonPlaceHolderApi;
 
-    FirebaseFirestore db;
+    DatabaseReference mDatabaseNewcv;
     RVAdapterNewCV recyclerViewAdapter;
     PullRefreshLayout pullRefreshLayout;
     ProgressDialog pd;
@@ -42,7 +51,7 @@ public class NewCVFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_newcv, container, false);
         myrecyclerView = (RecyclerView) view.findViewById(R.id.newcv_recyclerview);
-        myrecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        myrecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         pullRefreshLayout= (PullRefreshLayout)view.findViewById(R.id.swipeRefreshLayout);
         pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
@@ -53,6 +62,7 @@ public class NewCVFragment extends Fragment {
                     public void run() {
                         pullRefreshLayout.setRefreshing(false);
                         myrecyclerView.getRecycledViewPool().clear();
+                        createPost();
                         initializeData();
 
                     }
@@ -61,53 +71,68 @@ public class NewCVFragment extends Fragment {
             }
         });
 
-
-
         return view;
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = FirebaseFirestore.getInstance();
+        mDatabaseNewcv = FirebaseDatabase.getInstance().getReference("newcv");
         pd = new ProgressDialog(getContext());
         pd.setTitle("Loading ...");
         pd.show();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://script.google.com/macros/s/AKfycbxQPoyJydCAZZLnx0X2l4X2HSdxV0VylNwqkgww6v7Qu3_TX66f/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        createPost();
         initializeData();
-
-
-
 
     }
 
+    private void createPost(){
+
+        Call<Void> call  = jsonPlaceHolderApi.getPost();
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(!response.isSuccessful()){
+                    return;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+            }
+        });
+    }
+
+
     public void initializeData(){
-        db.collection("newcv")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        listNewCV.clear();
-                        for(DocumentSnapshot doc : task.getResult()){
-                            NewCV newCV = new NewCV(doc.getId(),
-                                    doc.getString("cvTitle"),
-                                    doc.getString("cvEmail"),
-                                    doc.getString("cvPhone"),
-                                    doc.getString("cvUrl"));
 
-                            listNewCV.add(newCV);
+        mDatabaseNewcv.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listNewCV.clear();
+                for (DataSnapshot childSnap : dataSnapshot.getChildren()){
+                    NewCV newCV = new NewCV(childSnap.getKey(),
+                            childSnap.child("cvTitle").getValue().toString(),
+                            childSnap.child("cvEmail").getValue().toString(),
+                            childSnap.child("cvPhone").getValue().toString(),
+                            childSnap.child("cvUrl").getValue().toString());
+                    listNewCV.add(newCV);
 
-                            recyclerViewAdapter = new RVAdapterNewCV(getContext(),listNewCV);
-                            myrecyclerView.setAdapter(recyclerViewAdapter);
-                        }
-                        pd.dismiss();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        pd.dismiss();
-                    }
+                    recyclerViewAdapter = new RVAdapterNewCV(getContext(),listNewCV);
+                    myrecyclerView.setAdapter(recyclerViewAdapter);
+                }
+                pd.dismiss();
+            }
 
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

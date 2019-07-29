@@ -16,13 +16,11 @@ import com.baoyz.widget.PullRefreshLayout;
 import com.example.alfajob.Adapter.RVAdapterAppliedCV;
 import com.example.alfajob.Objects.AppliedCV;
 import com.example.alfajob.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +30,7 @@ public class AppliedCVFragment extends Fragment {
 
     private List<AppliedCV> listAppliedCV = new ArrayList<>();
 
-    FirebaseFirestore db;
+    DatabaseReference mDatabaseAppliedcv;
     RVAdapterAppliedCV recyclerViewAdapter;
     PullRefreshLayout pullRefreshLayout;
     ProgressDialog pd;
@@ -66,7 +64,7 @@ public class AppliedCVFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        db = FirebaseFirestore.getInstance();
+        mDatabaseAppliedcv = FirebaseDatabase.getInstance().getReference("appliedcv");
         pd = new ProgressDialog(getContext());
         pd.setTitle("Loading ...");
         pd.show();
@@ -74,37 +72,64 @@ public class AppliedCVFragment extends Fragment {
     }
 
     public void initializeData(){
-        db.collection("appliedcv")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        listAppliedCV.clear();
-                        for(DocumentSnapshot doc : task.getResult()){
-                            AppliedCV appliedCV = new AppliedCV(doc.getId(),
-                                    doc.getString("cvTitle"),
-                                    doc.getString("cvScills"),
-                                    doc.getString("cvEmail"),
-                                    doc.getString("cvPhone"),
-                                    doc.getString("cvUrl"),
-                                    doc.getString("cvStarCount"),
-                                    doc.getString("cvCommentCount"));
+//        db.collection("appliedcv")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        listAppliedCV.clear();
+//                        for(DocumentSnapshot doc : task.getResult()){
+//                            AppliedCV appliedCV = new AppliedCV(doc.getId(),
+//                                    doc.getString("cvTitle"),
+//                                    doc.getString("cvScills"),
+//                                    doc.getString("cvEmail"),
+//                                    doc.getString("cvPhone"),
+//                                    doc.getString("cvUrl"),
+//                                    doc.getString("cvStarCount"),
+//                                    doc.getString("cvCommentCount"));
+//
+//                            listAppliedCV.add(appliedCV);
+//
+//                            recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
+//                            myrecyclerView.setAdapter(recyclerViewAdapter);
+//                        }
+//                        pd.dismiss();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        pd.dismiss();
+//                    }
+//
+//                });
 
-                            listAppliedCV.add(appliedCV);
+        mDatabaseAppliedcv.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listAppliedCV.clear();
+                for (DataSnapshot childSnap : dataSnapshot.getChildren()){
+                    AppliedCV appliedCV = new AppliedCV(childSnap.getKey(),
+                            childSnap.child("cvTitle").getValue().toString(),
+                            childSnap.child("cvSkills").getValue().toString(),
+                            childSnap.child("cvEmail").getValue().toString(),
+                            childSnap.child("cvPhone").getValue().toString(),
+                            childSnap.child("cvUrl").getValue().toString(),
+                            childSnap.child("cvStarCount").getValue().toString(),
+                            childSnap.child("cvCommentCount").getValue().toString());
+                    listAppliedCV.add(appliedCV);
 
-                            recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
-                            myrecyclerView.setAdapter(recyclerViewAdapter);
-                        }
-                        pd.dismiss();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        pd.dismiss();
-                    }
+                    recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
+                    myrecyclerView.setAdapter(recyclerViewAdapter);
+                }
+                pd.dismiss();
+            }
 
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

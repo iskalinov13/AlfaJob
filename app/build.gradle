@@ -36,8 +36,11 @@ dependencies {
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
     implementation 'jp.wasabeef:blurry:2.1.1'
     implementation 'com.github.navasmdc:MaterialDesign:1.5@aar'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

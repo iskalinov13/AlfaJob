@@ -98,21 +98,13 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
                       public void onClick(DialogInterface dialog, int which) {
 
                           final int position = viewHolder.getAdapterPosition();
-                          Toast.makeText(mContext, position+"", Toast.LENGTH_SHORT).show();
+                          System.out.println(position+"amdat"+mData.size());
 
                           mDatabaseNewcv.child(mData.get(position).getId()).removeValue()
                                   .addOnCompleteListener(new OnCompleteListener<Void>() {
                                       @Override
                                       public void onComplete(@NonNull Task<Void> task) {
-                                          if (position!= 0) {
-                                              Toast.makeText(mContext, position+"DELETED", Toast.LENGTH_SHORT).show();
-                                              mData.remove(position);
-                                              notifyItemRemoved(position);
-                                          }
-                                          else {
-                                              Toast.makeText(mContext, "not in bounds", Toast.LENGTH_SHORT).show();
-                                          }
-
+                                          notifyDataSetChanged();
                                       }
                                   })
                                   .addOnFailureListener(new OnFailureListener() {
@@ -121,28 +113,6 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
                                           Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
                                       }
                                   });
-
-//                          db.collection("newcv").document(mData.get(position).getId()).
-//                                  .delete()
-//                                  .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                      @Override
-//                                      public void onComplete(@NonNull Task<Void> task) {
-//                                          if(mData.size()!=0){
-//                                              mData.remove(position);
-//                                              notifyDataSetChanged();
-//
-//                                          }
-//
-//                                          Toast.makeText(mContext, "Successfully deleted ...", Toast.LENGTH_SHORT).show();
-//                                      }
-//                                  })
-//                                  .addOnFailureListener(new OnFailureListener() {
-//                                      @Override
-//                                      public void onFailure(@NonNull Exception e) {
-//
-//                                          Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-//                                      }
-//                                  });
 
                       }
                   });

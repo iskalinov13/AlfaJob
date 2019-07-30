@@ -36,8 +36,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -55,7 +53,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
     private static final int  REQUEST_CALL = 1;
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
-    public DatabaseReference mDatabaseStar;
+    public DatabaseReference mDatabaseStar, mDatabaseAppliedcv, mDatabaseSendToUsers;
     public String userId;
     public String cvId;
     public RVAdapterAppliedCV(Context mContext, List<AppliedCV> mData) {
@@ -75,6 +73,8 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         // init db, user
         db = FirebaseFirestore.getInstance();
         mDatabaseStar = FirebaseDatabase.getInstance().getReference().child("Stars");
+        mDatabaseAppliedcv = FirebaseDatabase.getInstance().getReference().child("appliedcv");
+        mDatabaseSendToUsers = FirebaseDatabase.getInstance().getReference().child("send");
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
@@ -100,31 +100,50 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                     public void onClick(DialogInterface dialog, int which) {
 
                         final int position = viewHolder.getAdapterPosition();
-                        Toast.makeText(mContext, position+"", Toast.LENGTH_SHORT).show();
+                        final String cvId = mData.get(position).getId();
 
-                        db.collection("appliedcv").document(mData.get(position).getId())
-                                .delete()
+                        mDatabaseAppliedcv.child(mData.get(position).getId()).removeValue()
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if(mData.size()!=0){
-                                            mDatabaseStar.child(mData.get(position).getId()).removeValue();
-                                            mData.remove(position);
-                                            notifyDataSetChanged();
-
-
-
-                                        }
-                                        Toast.makeText(mContext, "Successfully deleted ...", Toast.LENGTH_SHORT).show();
+                                        notifyDataSetChanged();
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-
                                         Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
+                        mDatabaseSendToUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                if(dataSnapshot.hasChild(cvId)){
+                                    mDatabaseSendToUsers.child(cvId).removeValue();
+                                }
+
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        mDatabaseStar.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                if(dataSnapshot.hasChild(cvId)){
+                                    mDatabaseStar.child(cvId).removeValue();
+                                }
+
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
 
                     }
                 });
@@ -200,9 +219,8 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                                     }
                                     mData.get(viewHolder.getAdapterPosition()).setStarCount(starCount+"");
                                     notifyItemChanged(viewHolder.getAdapterPosition());
-                                    db.collection("appliedcv")
-                                            .document(mData.get(viewHolder.getAdapterPosition()).getId())
-                                            .update("cvStarCount", starCount+"");
+                                    mDatabaseAppliedcv.child(mData.get(viewHolder.getAdapterPosition()).getId()).child("cvStarCount").setValue(starCount+"");
+
                                 }
                                 else{
 
@@ -212,9 +230,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                                     int starCount = Integer.parseInt(mData.get(viewHolder.getAdapterPosition()).getStarCount())+1;
                                     mData.get(viewHolder.getAdapterPosition()).setStarCount(starCount+"");
                                     notifyItemChanged(viewHolder.getAdapterPosition());
-                                    db.collection("appliedcv")
-                                            .document(mData.get(viewHolder.getAdapterPosition()).getId())
-                                            .update("cvStarCount", starCount + "");
+                                    mDatabaseAppliedcv.child(mData.get(viewHolder.getAdapterPosition()).getId()).child("cvStarCount").setValue(starCount+"");
                                 }
                             }
 
@@ -247,7 +263,6 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
 
                 String dial = "tel:"+phoneN;
                 mContext.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
-
             }
         }
         else{

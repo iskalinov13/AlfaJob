@@ -287,6 +287,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
+
     private void sentToLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

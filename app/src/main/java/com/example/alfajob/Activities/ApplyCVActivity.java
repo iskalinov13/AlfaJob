@@ -88,7 +88,9 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
             public void onClick(View v) {
                 btn_choose.setEnabled(false);
                 btn_choose.setTextColor(getResources().getColor(R.color.grey));
-                btn_sendAll.setTextColor(getResources().getColor(R.color.colorWhite));
+                btn_sendAll.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.btn_send_clicked));
+                btn_sendAll.setTextColor(Color.parseColor("#000000"));
+                btn_sendAll.setText("Sent");
                 ll_list_invisible.setVisibility(View.INVISIBLE);
             }
         });
@@ -238,6 +240,9 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         if(!et_addComment.getText().toString().trim().equals("")){
             cvCommentCount = "1";
         }
+        else{
+            cvCommentCount  = "0";
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ApplyCVActivity.this);
         builder.setTitle("Save");
@@ -246,16 +251,9 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Map<String, String> mCv = new HashMap<>();
-                mCv.put("cvTitle", cvTitle);
-                mCv.put("cvScills", cvSkills);
-                mCv.put("cvEmail", cvEmail);
-                mCv.put("cvPhone", cvPhone);
-                mCv.put("cvUrl", cvUrl);
-                mCv.put("cvCommentCount", cvCommentCount);
-                mCv.put("cvStarCount", "0");
 
                 DatabaseReference rootAppliedcv = mDatabaseAppliedcv.child(cvId);
+                System.out.println(cvTitle+cvSkills+cvEmail+cvPhone+cvUrl+cvCommentCount);
                 rootAppliedcv.child("cvTitle").setValue(cvTitle);
                 rootAppliedcv.child("cvSkills").setValue(cvSkills);
                 rootAppliedcv.child("cvEmail").setValue(cvEmail);
@@ -268,6 +266,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+
                                 Log.d("Success", "DocumentSnapshot successfully deleted!");
                             }
                         })
@@ -279,7 +278,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                         });
 
                 dialog.dismiss();
-                ApplyCVActivity.this.finish();
+                finish();
             }
 
         });
@@ -299,7 +298,19 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                                 Log.w("Fail", "Error deleting document", e);
                             }
                         });
-
+                mDatabaseSendToUsers.child(cvId).removeValue()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d("Success", "DocumentSnapshot successfully deleted!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("Fail", "Error deleting document", e);
+                            }
+                        });
 
                 dialog.dismiss();
                 ApplyCVActivity.this.finish();

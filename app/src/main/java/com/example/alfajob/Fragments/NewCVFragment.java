@@ -52,6 +52,8 @@ public class NewCVFragment extends Fragment {
         View view = inflater.inflate(R.layout.tab_newcv, container, false);
         myrecyclerView = (RecyclerView) view.findViewById(R.id.newcv_recyclerview);
         myrecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewAdapter = new RVAdapterNewCV(getContext(),listNewCV);
+        myrecyclerView.setAdapter(recyclerViewAdapter);
         pullRefreshLayout= (PullRefreshLayout)view.findViewById(R.id.swipeRefreshLayout);
         pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
@@ -141,7 +143,9 @@ public class NewCVFragment extends Fragment {
 
     }
 
-
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
 }

@@ -40,7 +40,9 @@ public class AppliedCVFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_appliedcv, container, false);
         myrecyclerView = (RecyclerView) view.findViewById(R.id.appliedcv_recyclerview);
-        myrecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        myrecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
+        myrecyclerView.setAdapter(recyclerViewAdapter);
         pullRefreshLayout= (PullRefreshLayout)view.findViewById(R.id.swipeRefreshLayoutAppliedCV);
         pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
@@ -55,7 +57,6 @@ public class AppliedCVFragment extends Fragment {
 
                     }
                 }, 3000);
-
             }
         });
 
@@ -72,51 +73,20 @@ public class AppliedCVFragment extends Fragment {
     }
 
     public void initializeData(){
-//        db.collection("appliedcv")
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        listAppliedCV.clear();
-//                        for(DocumentSnapshot doc : task.getResult()){
-//                            AppliedCV appliedCV = new AppliedCV(doc.getId(),
-//                                    doc.getString("cvTitle"),
-//                                    doc.getString("cvScills"),
-//                                    doc.getString("cvEmail"),
-//                                    doc.getString("cvPhone"),
-//                                    doc.getString("cvUrl"),
-//                                    doc.getString("cvStarCount"),
-//                                    doc.getString("cvCommentCount"));
-//
-//                            listAppliedCV.add(appliedCV);
-//
-//                            recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
-//                            myrecyclerView.setAdapter(recyclerViewAdapter);
-//                        }
-//                        pd.dismiss();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        pd.dismiss();
-//                    }
-//
-//                });
-
         mDatabaseAppliedcv.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listAppliedCV.clear();
                 for (DataSnapshot childSnap : dataSnapshot.getChildren()){
-                    AppliedCV appliedCV = new AppliedCV(childSnap.getKey(),
-                            childSnap.child("cvTitle").getValue().toString(),
-                            childSnap.child("cvSkills").getValue().toString(),
-                            childSnap.child("cvEmail").getValue().toString(),
-                            childSnap.child("cvPhone").getValue().toString(),
-                            childSnap.child("cvUrl").getValue().toString(),
-                            childSnap.child("cvStarCount").getValue().toString(),
-                            childSnap.child("cvCommentCount").getValue().toString());
+                    AppliedCV appliedCV;
+                    appliedCV = new AppliedCV(childSnap.getKey(),
+                            childSnap.child("cvTitle").getValue(String.class),
+                            childSnap.child("cvSkills").getValue(String.class),
+                            childSnap.child("cvEmail").getValue(String.class),
+                            childSnap.child("cvPhone").getValue(String.class),
+                            childSnap.child("cvUrl").getValue(String.class),
+                            childSnap.child("cvStarCount").getValue(String.class),
+                            childSnap.child("cvCommentCount").getValue(String.class));
                     listAppliedCV.add(appliedCV);
 
                     recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
@@ -138,4 +108,9 @@ public class AppliedCVFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
 }

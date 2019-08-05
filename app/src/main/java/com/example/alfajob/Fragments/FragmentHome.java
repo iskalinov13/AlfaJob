@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class FragmentHome extends Fragment {
+public class FragmentHome extends Fragment{
 
     FrameLayout newCV, appliedCV;
     View view1, view2;
@@ -57,6 +57,8 @@ public class FragmentHome extends Fragment {
         tvnewCV = v.findViewById(R.id.tvnewCV);
         tvappliedCV = v.findViewById(R.id.tvappliedCV);
     }
+
+
 
     //ONCLICK LISTENER
     public View.OnClickListener clik = new View.OnClickListener() {

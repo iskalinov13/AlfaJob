@@ -83,7 +83,8 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
                   intent.putExtra("CV PHONE", strPhone);
                   intent.putExtra("CV URL", strCVUrl);
 
-                  mContext.startActivity(intent);
+                  ((Activity) mContext).startActivityForResult(intent, 1001);
+
               }
           });
 

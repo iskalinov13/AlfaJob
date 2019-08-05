@@ -1,11 +1,9 @@
 package com.example.alfajob.Fragments;
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,16 +33,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewCVFragment extends Fragment {
-    View v;
     private RecyclerView myrecyclerView;
 
     private List<NewCV> listNewCV = new ArrayList<>();
     private JsonPlaceHolderApi jsonPlaceHolderApi;
 
-    DatabaseReference mDatabaseNewcv;
-    RVAdapterNewCV recyclerViewAdapter;
-    PullRefreshLayout pullRefreshLayout;
-    ProgressDialog pd;
+    private DatabaseReference mDatabaseNewcv;
+    private RVAdapterNewCV recyclerViewAdapter;
+    private PullRefreshLayout pullRefreshLayout;
+    private ProgressDialog pd;
 
     @Nullable
     @Override
@@ -108,7 +105,6 @@ public class NewCVFragment extends Fragment {
             }
         });
     }
-
 
     public void initializeData(){
 

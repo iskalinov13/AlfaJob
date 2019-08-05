@@ -90,7 +90,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            String userID = mDatabase.push().getKey();;
+                                            String userID = mAuth.getCurrentUser().getUid();
                                             User user = new User(userID ,userName, userEmail, userPassword);
                                             mDatabase.child(userID).setValue(user);
 

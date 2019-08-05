@@ -1,23 +1,21 @@
 package com.example.alfajob.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.alfajob.Fragments.FragmentHome;
 import com.example.alfajob.Fragments.FragmentHomeUser;
 import com.example.alfajob.Fragments.FragmentVacancies;
-import com.example.alfajob.Interface.JsonPlaceHolderApi;
+import com.example.alfajob.Fragments.NewCVFragment;
+import com.example.alfajob.Notifications.Token;
 import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.speech.RecognizerIntent;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -34,9 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -48,15 +44,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.view.Menu;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -68,6 +56,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseReference mDatabaseUsers;
     private FirebaseUser currentUser;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,12 +64,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -92,16 +82,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-
         tvNavHeaderUsername = (TextView) headerView.findViewById(R.id.tv_nav_header_username);
         tvNavHeaderEmail = (TextView) headerView.findViewById(R.id.tv_nav_header_email);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
+        Intent intent = getIntent();
 
         Fragment fragment = null;
         if(currentUser!=null){
+            updateToken(FirebaseInstanceId.getInstance().getToken());
             if(currentUser.getEmail().toString().equals("recruiteralfabank@gmail.com")){
                 fab.hide();
                 fragment = new FragmentHome();
@@ -154,6 +145,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
@@ -167,8 +159,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             return;
         }
-        super.onActivityResult(requestCode, resultCode, data);
+//        else if ((requestCode == 10001) && (resultCode == Activity.RESULT_OK)){
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            Fragment fragment = new FragmentHome();
+//            ft.detach(fragment).attach(fragment).commit();
+//        }
     }
+
 
     @Override
     protected void onStart() {
@@ -206,6 +203,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+
 
     @Override
     public void onBackPressed() {
@@ -295,5 +293,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
         finish();
         overridePendingTransition(0, 0);
+    }
+
+    private void updateToken(String token){
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("tokens");
+        Token t= new Token(token);
+        reference.child(firebaseUser.getUid()).setValue(t);
     }
 }

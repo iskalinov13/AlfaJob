@@ -25,9 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppliedCVFragment extends Fragment {
-    View v;
     private RecyclerView myrecyclerView;
-
     private List<AppliedCV> listAppliedCV = new ArrayList<>();
 
     DatabaseReference mDatabaseAppliedcv;
@@ -39,11 +37,11 @@ public class AppliedCVFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_appliedcv, container, false);
-        myrecyclerView = (RecyclerView) view.findViewById(R.id.appliedcv_recyclerview);
+        myrecyclerView = view.findViewById(R.id.appliedcv_recyclerview);
         myrecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
         myrecyclerView.setAdapter(recyclerViewAdapter);
-        pullRefreshLayout= (PullRefreshLayout)view.findViewById(R.id.swipeRefreshLayoutAppliedCV);
+        pullRefreshLayout= view.findViewById(R.id.swipeRefreshLayoutAppliedCV);
         pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

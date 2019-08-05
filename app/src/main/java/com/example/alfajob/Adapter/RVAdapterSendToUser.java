@@ -20,7 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RVAdapterSendToUser extends RecyclerView.Adapter<RVAdapterSendToUser.MyViewHolder>  {
 
-    Context mContext;
+    private Context mContext;
     List<User> mData;
     FirebaseFirestore db;
     private OnItemClickListener clickListener;

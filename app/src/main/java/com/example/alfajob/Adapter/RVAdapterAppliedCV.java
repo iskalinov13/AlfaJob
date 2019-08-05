@@ -24,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.alfajob.Activities.CommentActivity;
 import com.example.alfajob.Objects.AppliedCV;
 import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,7 +55,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
     private static final int  REQUEST_CALL = 1;
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
-    public DatabaseReference mDatabaseStar, mDatabaseAppliedcv, mDatabaseSendToUsers;
+    public DatabaseReference mDatabaseStar, mDatabaseAppliedcv, mDatabaseSendToUsers, mDatabaseComments;
     public String userId;
     public String cvId;
     public RVAdapterAppliedCV(Context mContext, List<AppliedCV> mData) {
@@ -75,6 +77,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         mDatabaseStar = FirebaseDatabase.getInstance().getReference().child("Stars");
         mDatabaseAppliedcv = FirebaseDatabase.getInstance().getReference().child("appliedcv");
         mDatabaseSendToUsers = FirebaseDatabase.getInstance().getReference().child("send");
+        mDatabaseComments = FirebaseDatabase.getInstance().getReference().child("comments");
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
@@ -106,7 +109,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        notifyDataSetChanged();
+                                        notifyItemRemoved(position);
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -139,6 +142,21 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                                 }
 
                             }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        mDatabaseComments.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                if(dataSnapshot.hasChild(cvId)){
+                                    mDatabaseComments.child(cvId).removeValue();
+                                }
+                            }
+
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -196,7 +214,15 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
             }
         });
 
-
+        viewHolder.iv_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra("cvId", mData.get(viewHolder.getAdapterPosition()).getId());
+                intent.putExtra("userId", userId);
+                mContext.startActivity(intent);
+            }
+        });
         viewHolder.iv_star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,7 +360,6 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
             iv_comment = (ImageView)itemView.findViewById(R.id.iv_comment_appliedcv);
             iv_delete = (ImageView)itemView.findViewById(R.id.iv_delete_appliedcv);
             btn_view = (Button)itemView.findViewById(R.id.btn_view_appliedcv);
-
 
         }
 

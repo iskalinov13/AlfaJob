@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.NewVacancyActivity"></activity>
+        <activity android:name=".Activities.NewVacancyActivity">
+        </activity>
         <activity android:name=".Activities.CommentActivity" />
         <activity android:name=".Activities.ApplyCVActivity">
             <meta-data

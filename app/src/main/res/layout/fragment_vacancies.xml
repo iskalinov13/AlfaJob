@@ -3,11 +3,17 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:layout_marginTop="57dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Menu 1"
-        android:id="@+id/textView"/>
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/swipeRefreshLayout_vacancy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rv_vacancy" />
+
+    </com.baoyz.widget.PullRefreshLayout>
+
 
 </RelativeLayout>

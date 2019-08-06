@@ -1,9 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.NewVacancyActivity">
+    android:orientation="vertical"
+    tools:context=".Activities.NewVacancyActivity"
+    android:background="#FB4F51">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:background="#D91A26"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_event_available_24px_outlined"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:text="Date"
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tv_date_newvacancy"
+                android:layout_marginTop="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Today 10/07/2019"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_newcv_main"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bcg_ll_applycv"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:gravity="center"
+            android:text="Vacancy"
+            android:textColor="#474747"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.7dp"
+            android:background="#938B8B"/>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:text="Job Title"
+            android:textColor="#938B8B"
+            android:textSize="18sp" />
+
+        <EditText
+            android:layout_marginTop="10dp"
+            android:id="@+id/et_newvacancy_jobtitle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bcg_edit_email"
+            android:fontFamily="@font/roboto"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:shadowColor="#5C000000"
+            android:shadowDx="0"
+            android:shadowDy="8"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:text="Job Description"
+            android:textColor="#938B8B"
+            android:textSize="18sp" />
+
+        <EditText
+            android:layout_marginTop="10dp"
+            android:id="@+id/et_newvacancy_jobdescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bcg_edit_email"
+            android:fontFamily="@font/roboto"
+            android:gravity="start"
+            android:padding="10dp"
+            android:shadowColor="#5C000000"
+            android:shadowDx="0"
+            android:shadowDy="8"
+            android:textSize="18sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
+
+            <Button
+                android:id="@+id/btn_create_newvacancy"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:textAlignment="center"
+                android:background="@drawable/btn_view"
+                android:fontFamily="@font/roboto_medium"
+                android:text="CREATE"
+                android:textColor="@color/colorWhite" />
+
+            <Button
+                android:id="@+id/btn_cancel_newvacancy"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:textAlignment="center"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/btn_apply"
+                android:fontFamily="@font/roboto_medium"
+                android:text="CANCEL"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

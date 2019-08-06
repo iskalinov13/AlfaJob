@@ -41,8 +41,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.view.Menu;
 import android.widget.TextView;
 import java.util.ArrayList;
 
@@ -55,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference mDatabaseUsers;
     private FirebaseUser currentUser;
+    private FloatingActionButton fab;
 
 
     @Override
@@ -64,12 +63,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
+        final Intent intentVacancy =  new Intent(this, NewVacancyActivity.class);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                startActivity(intentVacancy);
 
             }
         });
@@ -112,37 +113,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             sentToLoginActivity();
         }
 
-
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        searchView.setVoiceSearch(true);
-        searchView.clearFocus();
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                //Do some magic
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                //Do some magic
-                return false;
-            }
-        });
-
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-                //Do some magic
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-                //Do some magic
-            }
-        });
-
-
     }
 
 
@@ -159,11 +129,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             return;
         }
-//        else if ((requestCode == 10001) && (resultCode == Activity.RESULT_OK)){
-//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//            Fragment fragment = new FragmentHome();
-//            ft.detach(fragment).attach(fragment).commit();
-//        }
     }
 
 
@@ -216,23 +181,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        //searchView.setMenuItem(item);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -256,6 +221,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_vacancy) {
             getSupportActionBar().setTitle(item.getTitle());
             fragment = new FragmentVacancies();
+            fab.hide();
 
         } else if (id == R.id.nav_settings) {
             getSupportActionBar().setTitle(item.getTitle());

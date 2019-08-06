@@ -23,7 +23,7 @@
 
     <!-- TODO: ApplyCV strings-->
     <string name="apply_cv_title">Title</string>
-    <string name="apply_cv_skills">#Skills</string>
+    <string name="apply_cv_skills">#Java#Python</string>
     <string name="apply_cv_phone">Phone number</string>
     <string name="apply_cv_addcomment">Add comment</string>
 

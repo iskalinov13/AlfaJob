@@ -2,18 +2,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:layout_marginTop="57dp">
-
-    <com.baoyz.widget.PullRefreshLayout
-        android:id="@+id/swipeRefreshLayout_vacancy"
+    
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/rv_vacancy" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/rv_vacancy" />
-
-    </com.baoyz.widget.PullRefreshLayout>
+    <TextView
+        android:id="@+id/tv_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/roboto"
+        android:gravity="center"
+        android:text="Нет новых вакансий"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="18sp"
+        android:visibility="invisible"/>
+    
+    
 
 
 </RelativeLayout>

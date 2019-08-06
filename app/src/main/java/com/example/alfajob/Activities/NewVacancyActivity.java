@@ -52,7 +52,7 @@ public class NewVacancyActivity extends AppCompatActivity {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReferenceVacancy, mReferenceUsers;
     private String title, description, date, userId, userName, userPhoto;
-
+    private String hrId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +169,9 @@ public class NewVacancyActivity extends AppCompatActivity {
                                   final String userId, String userName, String userPhoto){
         String vacancyId = mReferenceVacancy.push().getKey();
         Vacancy vacancy = new Vacancy(userId, userName, userPhoto, title, description, date, vacancyId);
-        mReferenceVacancy.child(vacancyId).setValue(vacancy);
+        mReferenceVacancy.child(userId).child(vacancyId).setValue(vacancy);
+        sendToHR(vacancyId, vacancy);
+
 
         et_jobDescription.setText("");
         et_jobTitle.setText("");
@@ -177,5 +179,22 @@ public class NewVacancyActivity extends AppCompatActivity {
 
     };
 
+    private void sendToHR(final String vacancyId, final Vacancy vacancy){
+        mReferenceUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap: dataSnapshot.getChildren()){
+                    User user = snap.getValue(User.class);
+                    if(user.getUserEmail().equals("recruiteralfabank@gmail.com")){
+                        hrId = user.getUserId();
+                        mReferenceVacancy.child(hrId).child(vacancyId).setValue(vacancy);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
 }

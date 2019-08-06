@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,11 +22,14 @@ import com.example.alfajob.Adapter.RVAdapterVacancy;
 import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.Vacancy;
 import com.example.alfajob.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +42,24 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReferenceVacancy;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+
+    private TextView tv_no_data;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view  =  inflater.inflate(R.layout.fragment_vacancies, container, false);
 
+        //view
+        tv_no_data = view.findViewById(R.id.tv_no_data);
+
         //DB
         mDatabase = FirebaseDatabase.getInstance();
         mReferenceVacancy = mDatabase.getReference("vacancy");
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
 
         vacancyList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.rv_vacancy);
@@ -59,16 +72,44 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
         adapterVacancy.setClickListener(this);
 
         initializeData();
+        checkIfempty();
 
         return view;
     }
-
+    private void checkIfempty(){
+        if(vacancyList.size()==0){
+            recyclerView.setVisibility(View.INVISIBLE);
+            tv_no_data.setVisibility(View.VISIBLE);
+        }
+        else{
+            recyclerView.setVisibility(View.VISIBLE);
+            tv_no_data.setVisibility(View.INVISIBLE);
+        }
+    }
     private void initializeData(){
-        mReferenceVacancy.addChildEventListener(new ChildEventListener() {
+        mReferenceVacancy.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(firebaseUser.getUid())) {
+                    retrieveData();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void retrieveData(){
+        mReferenceVacancy.child(firebaseUser.getUid()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 vacancyList.add(dataSnapshot.getValue(Vacancy.class));
                 adapterVacancy.notifyDataSetChanged();
+                checkIfempty();
             }
 
             @Override
@@ -87,6 +128,7 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
                 int index = getItemIndex(vacancy);
                 vacancyList.remove(index);
                 adapterVacancy.notifyItemRemoved(index);
+                checkIfempty();
             }
 
             @Override
@@ -135,7 +177,7 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
     }
 
     private void  removeVacancy(int position){
-        mReferenceVacancy.child(vacancyList.get(position).getVacancyId()).removeValue();
+        mReferenceVacancy.child(firebaseUser.getUid()).child(vacancyList.get(position).getVacancyId()).removeValue();
     }
 
     private void viewVacancy(int position){

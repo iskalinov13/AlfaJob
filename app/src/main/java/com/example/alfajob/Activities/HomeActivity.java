@@ -213,9 +213,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             if(currentUser.getEmail().toString().equals("recruiteralfabank@gmail.com")){
                 fragment = new FragmentHome();
+
             }
             else{
                 fragment = new FragmentHomeUser();
+                fab.show();
+
             }
 
         } else if (id == R.id.nav_vacancy) {

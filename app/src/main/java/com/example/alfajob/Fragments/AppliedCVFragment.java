@@ -125,41 +125,46 @@ public class AppliedCVFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                firebaseSearch(query);
+                search(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                firebaseSearch(newText);
+                search(newText);
                 return false;
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void firebaseSearch(String searchText){
-        Query query = mDatabaseAppliedcv.orderByChild("cvSkills").startAt(searchText).endAt(searchText + "\uf8ff");
-        query.addValueEventListener(new ValueEventListener() {
+    private void search(String text){
+        final String s =text;
+
+        mDatabaseAppliedcv.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listAppliedCV.clear();
-                for (DataSnapshot childSnap : dataSnapshot.getChildren()){
-                    AppliedCV appliedCV;
-                    appliedCV = new AppliedCV(childSnap.getKey(),
-                            childSnap.child("cvTitle").getValue(String.class),
-                            childSnap.child("cvSkills").getValue(String.class),
-                            childSnap.child("cvEmail").getValue(String.class),
-                            childSnap.child("cvPhone").getValue(String.class),
-                            childSnap.child("cvUrl").getValue(String.class),
-                            childSnap.child("cvStarCount").getValue(String.class),
-                            childSnap.child("cvCommentCount").getValue(String.class));
-                    listAppliedCV.add(appliedCV);
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    if ( dataSnapshot1.child("cvSkills").getValue().toString().toLowerCase().contains(s) || (dataSnapshot1.child("cvTitle").getValue().toString().toLowerCase().contains(s))){
+                        AppliedCV appliedCV;
+                        appliedCV = new AppliedCV(dataSnapshot1.getKey(),
+                                dataSnapshot1.child("cvTitle").getValue(String.class),
+                                dataSnapshot1.child("cvSkills").getValue(String.class),
+                                dataSnapshot1.child("cvEmail").getValue(String.class),
+                                dataSnapshot1.child("cvPhone").getValue(String.class),
+                                dataSnapshot1.child("cvUrl").getValue(String.class),
+                                dataSnapshot1.child("cvStarCount").getValue(String.class),
+                                dataSnapshot1.child("cvCommentCount").getValue(String.class));
+                        listAppliedCV.add(appliedCV);
 
-                    recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
-                    myrecyclerView.setAdapter(recyclerViewAdapter);
+                        recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
+                        myrecyclerView.setAdapter(recyclerViewAdapter);
+
+                    }
+                    pd.dismiss();
+
                 }
-                pd.dismiss();
             }
 
             @Override
@@ -168,6 +173,7 @@ public class AppliedCVFragment extends Fragment {
             }
         });
     }
+
 
     @Override
     public void onStart() {

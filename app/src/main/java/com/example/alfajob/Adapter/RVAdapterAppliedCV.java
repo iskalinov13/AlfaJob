@@ -314,6 +314,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
     }
 
     private void approveCV(String cvId){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("approved");
 
     }
     private void seeStars(int position){

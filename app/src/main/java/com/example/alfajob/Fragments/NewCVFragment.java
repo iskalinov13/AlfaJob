@@ -99,6 +99,39 @@ public class NewCVFragment extends Fragment {
 
     }
 
+    private void search(String text){
+        final String s =text;
+
+        mDatabaseNewcv.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listNewCV.clear();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    if ( (dataSnapshot1.child("cvTitle").getValue().toString().toLowerCase().contains(s))){
+                        NewCV newCV;
+                        newCV = new NewCV(dataSnapshot1.getKey(),
+                                dataSnapshot1.child("cvTitle").getValue(String.class),
+                                dataSnapshot1.child("cvEmail").getValue(String.class),
+                                dataSnapshot1.child("cvPhone").getValue(String.class),
+                                dataSnapshot1.child("cvUrl").getValue(String.class));
+                        listNewCV.add(newCV);
+
+                        recyclerViewAdapter = new RVAdapterNewCV(getContext(),listNewCV);
+                        myrecyclerView.setAdapter(recyclerViewAdapter);
+
+                    }
+                    pd.dismiss();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void createPost(){
 
         Call<Void> call  = jsonPlaceHolderApi.getPost();

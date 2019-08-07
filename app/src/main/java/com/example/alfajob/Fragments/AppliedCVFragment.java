@@ -12,7 +12,6 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,14 +34,14 @@ public class AppliedCVFragment extends Fragment {
     private RecyclerView myrecyclerView;
     private List<AppliedCV> listAppliedCV = new ArrayList<>();
 
-    DatabaseReference mDatabaseAppliedcv;
-    RVAdapterAppliedCV recyclerViewAdapter;
-    PullRefreshLayout pullRefreshLayout;
-    ProgressDialog pd;
+    private DatabaseReference mDatabaseAppliedcv;
+    private RVAdapterAppliedCV recyclerViewAdapter;
+    private PullRefreshLayout pullRefreshLayout;
+    private ProgressDialog pd;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_appliedcv, container, false);
         myrecyclerView = view.findViewById(R.id.appliedcv_recyclerview);
         myrecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -77,7 +76,7 @@ public class AppliedCVFragment extends Fragment {
         initializeData();
     }
 
-    public void initializeData(){
+    private void initializeData(){
         mDatabaseAppliedcv.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -112,7 +111,6 @@ public class AppliedCVFragment extends Fragment {
         int id = item.getItemId();
         if(id == R.id.action_search){
             //TODO
-            System.out.println("hello world");
             return true;
         }
 

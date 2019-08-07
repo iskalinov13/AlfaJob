@@ -33,7 +33,7 @@ public class FragmentHomeUser extends Fragment {
     private List<AppliedCV> listAppliedCV = new ArrayList<>();
     private List<String> listOfCVId = new ArrayList<>();
     private DatabaseReference mDatabaseAppliedcv, mDatabaseSend;
-    public  RVAdapterHomeUser recyclerViewAdapter;
+    private  RVAdapterHomeUser recyclerViewAdapter;
     private PullRefreshLayout pullRefreshLayout;
     private ProgressDialog pd;
     private FirebaseUser firebaseUser;
@@ -44,7 +44,7 @@ public class FragmentHomeUser extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_user, container, false);
         myrecyclerView = view.findViewById(R.id.homeuser_recyclerview);
         recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
@@ -95,8 +95,10 @@ public class FragmentHomeUser extends Fragment {
                     String cvId = childSnap.getKey();
                     if(childSnap.hasChild(firebaseUser.getUid())){
                         listOfCVId.add(cvId);
+                        System.out.println(cvId);
                     }
                 }
+                retrieveData();
             }
 
             @Override
@@ -104,6 +106,9 @@ public class FragmentHomeUser extends Fragment {
 
             }
         });
+    }
+
+    private void retrieveData(){
         mDatabaseAppliedcv.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -125,6 +130,8 @@ public class FragmentHomeUser extends Fragment {
                         myrecyclerView.setAdapter(recyclerViewAdapter);
                     }
                 }
+                recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
+                myrecyclerView.setAdapter(recyclerViewAdapter);
                 pd.dismiss();
             }
 
@@ -135,20 +142,6 @@ public class FragmentHomeUser extends Fragment {
         });
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-//
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        isVisible = isVisibleToUser;
-//        if (isStarted && isVisible) {
-//            initializeData();
-//        }
-//    }
-//
     @Override
     public void onResume() {
         super.onResume();

@@ -1,5 +1,8 @@
 package com.example.alfajob.Fragments;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -7,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -46,10 +50,11 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
     private FirebaseUser firebaseUser;
 
     private TextView tv_no_data;
+    private Dialog dialogView;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view  =  inflater.inflate(R.layout.fragment_vacancies, container, false);
 
         //view
@@ -70,6 +75,8 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
         adapterVacancy = new RVAdapterVacancy(vacancyList, getContext());
         recyclerView.setAdapter(adapterVacancy);
         adapterVacancy.setClickListener(this);
+
+
 
         initializeData();
         checkIfempty();
@@ -158,9 +165,12 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Vacancies");
+        if(getActivity() !=null){
+            getActivity().setTitle("Vacancies");
+        }
+
     }
 
     @Override
@@ -181,7 +191,33 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
     }
 
     private void viewVacancy(int position){
-        System.out.println(vacancyList.get(position).getVacancyDescription());
+        //DIALOG
+        dialogView = new Dialog(getContext());
+        dialogView.setContentView(R.layout.dialog_vacancy);
+        if(dialogView.getWindow() != null){
+            dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+
+        TextView tv_titlle = dialogView.findViewById(R.id.tv_title_dialog);
+        TextView tv_date = dialogView.findViewById(R.id.tv_date_dialog);
+        TextView tv_description = dialogView.findViewById(R.id.tv_dialog_description);
+
+        Button btn_publish = dialogView.findViewById(R.id.btn_publish_dialog);
+        Button btn_cancel = dialogView.findViewById(R.id.btn_cancel_dialog);
+
+        tv_titlle.setText(vacancyList.get(position).getVacancyTitle());
+        tv_date.setText(vacancyList.get(position).getVacancyDate());
+        tv_description.setText(vacancyList.get(position).getVacancyDescription());
+        dialogView.show();
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogView.dismiss();
+            }
+        });
+
     }
 
     @Override

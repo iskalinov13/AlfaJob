@@ -1,10 +1,15 @@
 package com.example.alfajob.Fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.example.alfajob.Adapter.RVAdapterHomeUser;
+import com.example.alfajob.Adapter.RVAdapterStar;
+import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.AppliedCV;
+import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,13 +41,14 @@ public class FragmentHomeUser extends Fragment {
     private List<AppliedCV> listAppliedCV = new ArrayList<>();
     private List<String> listOfCVId = new ArrayList<>();
     private DatabaseReference mDatabaseAppliedcv, mDatabaseSend;
-    private  RVAdapterHomeUser recyclerViewAdapter;
+    private RVAdapterHomeUser recyclerViewAdapter;
     private PullRefreshLayout pullRefreshLayout;
     private ProgressDialog pd;
     private FirebaseUser firebaseUser;
     private FirebaseAuth mAuth;
     private Boolean isStarted = false;
     private Boolean isVisible = false;
+    private Dialog dialogView;
 
 
     @Nullable
@@ -62,8 +71,6 @@ public class FragmentHomeUser extends Fragment {
                         pullRefreshLayout.setRefreshing(false);
                         myrecyclerView.getRecycledViewPool().clear();
                         initializeData();
-                        System.out.println(listAppliedCV.size());
-
                     }
                 }, 3000);
             }
@@ -108,6 +115,9 @@ public class FragmentHomeUser extends Fragment {
         });
     }
 
+
+
+
     private void retrieveData(){
         mDatabaseAppliedcv.addValueEventListener(new ValueEventListener() {
             @Override
@@ -131,7 +141,7 @@ public class FragmentHomeUser extends Fragment {
                     }
                 }
                 recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
-                myrecyclerView.setAdapter(recyclerViewAdapter);
+                myrecyclerView.setAdapter(recyclerViewAdapter);;
                 pd.dismiss();
             }
 
@@ -147,6 +157,5 @@ public class FragmentHomeUser extends Fragment {
         super.onResume();
         recyclerViewAdapter.notifyDataSetChanged();
     }
-
 
 }

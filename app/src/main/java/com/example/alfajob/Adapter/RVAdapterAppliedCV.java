@@ -3,11 +3,13 @@ package com.example.alfajob.Adapter;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
@@ -23,10 +25,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alfajob.Activities.CommentActivity;
 import com.example.alfajob.Objects.AppliedCV;
+import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -40,6 +44,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +62,8 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
     public FirebaseUser currentUser;
     public DatabaseReference mDatabaseStar, mDatabaseAppliedcv, mDatabaseSendToUsers, mDatabaseComments;
     public String userId;
-    public String cvId;
+    private Dialog dialogView, dialogApprove;
+
     public RVAdapterAppliedCV(Context mContext, List<AppliedCV> mData) {
         this.mContext = mContext;
         this.mData = mData;
@@ -81,7 +87,6 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
-
 
         viewHolder.btn_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +196,32 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
             }
         });
 
+        viewHolder.iv_approve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialogView = new Dialog(mContext);
+                dialogView.setContentView(R.layout.dialog_approve);
+                dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialogView.show();
+
+                Button btn_yes = dialogView.findViewById(R.id.btn_yes_dialog);
+                Button btn_no = dialogView.findViewById(R.id.btn_no_dialog);
+                btn_yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        approveCV(mData.get(viewHolder.getAdapterPosition()).getId());
+                        dialogView.dismiss();
+                    }
+                });
+                btn_no.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogView.dismiss();
+                    }
+                });
+            }
+        });
+
         viewHolder.iv_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -270,8 +301,87 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
             }
         });
 
+        viewHolder.tv_star_count.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                seeStars(viewHolder.getAdapterPosition());
+            }
+        });
+
+
         return viewHolder;
 
+    }
+
+    private void approveCV(String cvId){
+
+    }
+    private void seeStars(int position){
+
+        dialogView = new Dialog(mContext);
+        dialogView.setContentView(R.layout.dialog_star);
+        dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        List<User> listUsers = getUsersList(getUsersId(mData.get(position).getId()));
+
+        RecyclerView recyclerViewStars = dialogView.findViewById(R.id.rv_stars);
+        TextView tv_no_data = dialogView.findViewById(R.id.tv_star_no_data);
+        Button btn_ok = dialogView.findViewById(R.id.btn_ok);
+
+        RVAdapterStar rvAdapterStar = new RVAdapterStar(mContext, listUsers);
+        recyclerViewStars.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerViewStars.setAdapter(rvAdapterStar);
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogView.dismiss();
+            }
+        });
+        dialogView.show();
+    }
+    private List<User> getUsersList(final List<String> list){
+
+        final List<User> listOfUsers = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    User user = snapshot.getValue(User.class);
+                    if(list.contains(user.getUserId())){
+                        listOfUsers.add(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return listOfUsers;
+    }
+    private List<String> getUsersId(String cvId){
+
+        final List<String> list = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Stars").child(cvId);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    list.add(snapshot.getValue(String.class));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return list;
     }
 
     private void makePhoneCall(String phonenumber){
@@ -337,6 +447,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         private ImageView iv_email;
         private ImageView iv_phone;
         private ImageView iv_delete;
+        private ImageView iv_approve;
         private Button btn_view;
 
         private FirebaseAuth mAuth;
@@ -359,6 +470,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
             iv_star = (ImageView)itemView.findViewById(R.id.iv_star_appliedcv);
             iv_comment = (ImageView)itemView.findViewById(R.id.iv_comment_appliedcv);
             iv_delete = (ImageView)itemView.findViewById(R.id.iv_delete_appliedcv);
+            iv_approve = itemView.findViewById(R.id.iv_approve_appliedcv);
             btn_view = (Button)itemView.findViewById(R.id.btn_view_appliedcv);
 
         }

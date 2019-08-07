@@ -1,8 +1,11 @@
 package com.example.alfajob.Adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -15,11 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alfajob.Activities.CommentActivity;
 import com.example.alfajob.Activities.HomeActivity;
+import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.AppliedCV;
+import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +35,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.MyViewHolder> {
@@ -37,17 +45,24 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
     public List<AppliedCV> mData;
     private FirebaseFirestore db;
     boolean starClicked;
+    private OnItemClickListener clickListener;
 
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
     public DatabaseReference mDatabaseStar, mDatabaseAppliedcv, mDatabaseComments, mDatabaseSendToUsers;
     public String userId;
+    private Dialog dialogView;
 
 
     public RVAdapterHomeUser(Context mContext, List<AppliedCV> mData) {
         this.mContext = mContext;
         this.mData = mData;
     }
+
+    public void setClickListener(OnItemClickListener itemClickListener) {
+        this.clickListener = itemClickListener;
+    }
+
 
     @NonNull
     @Override
@@ -157,8 +172,87 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
             }
         });
 
+        viewHolder.tv_star_count.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                seeStars(viewHolder.getAdapterPosition());
+            }
+        });
+
         return viewHolder;
 
+    }
+
+
+    private void seeStars(int position){
+
+        dialogView = new Dialog(mContext);
+        dialogView.setContentView(R.layout.dialog_star);
+        dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//        if(dialogView.getWindow() != null){
+//            dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        }
+
+        List<User> listUsers = getUsersList(getUsersId(mData.get(position).getId()));
+
+        RecyclerView recyclerViewStars = dialogView.findViewById(R.id.rv_stars);
+        TextView tv_no_data = dialogView.findViewById(R.id.tv_star_no_data);
+        Button btn_ok = dialogView.findViewById(R.id.btn_ok);
+
+        RVAdapterStar rvAdapterStar = new RVAdapterStar(mContext, listUsers);
+        recyclerViewStars.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerViewStars.setAdapter(rvAdapterStar);
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogView.dismiss();
+            }
+        });
+        dialogView.show();
+    }
+    private List<User> getUsersList(final List<String> list){
+
+        final List<User> listOfUsers = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    User user = snapshot.getValue(User.class);
+                    if(list.contains(user.getUserId())){
+                        listOfUsers.add(user);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return listOfUsers;
+    }
+    private List<String> getUsersId(String cvId){
+
+        final List<String> list = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Stars").child(cvId);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    list.add(snapshot.getValue(String.class));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return list;
     }
 
 
@@ -183,7 +277,7 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
     }
 
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tv_title;
         private TextView tv_skills;
@@ -198,7 +292,7 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
         private DatabaseReference mDatabaseStars, mDatabaseSend;
         private  Context mContext;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView)  {
             super(itemView);
             mAuth = FirebaseAuth.getInstance();
             mDatabaseStars = FirebaseDatabase.getInstance().getReference().child("Stars");
@@ -213,6 +307,17 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
             iv_notification = itemView.findViewById(R.id.iv_notification_homeuser);
             btn_view = (Button) itemView.findViewById(R.id.btn_view_homeuser);
 
+
+        }
+        @Override
+        public void onClick(View view) {
+            if (clickListener != null) {
+                System.out.println("hello");
+                clickListener.onClick(view, getAdapterPosition());
+            }
+            else{
+                System.out.println("by");
+            }
 
         }
 

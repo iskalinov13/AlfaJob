@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -26,8 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.alfajob.Adapter.RVAdapterSendToUser;
-import com.example.alfajob.Fragments.FragmentHome;
-import com.example.alfajob.Fragments.FragmentHomeUser;
 import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Interface.APIService;
 import com.example.alfajob.Notifications.Client;
@@ -73,6 +70,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     public LinearLayout ll_list_invisible;
     APIService apiService;
     boolean notify = false;
+    private int cvCommentcount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,31 +221,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
     public void sendCVToAllUsers(final String cvId){
 
-        if(!et_addComment.getText().toString().trim().equals("")){
-
-            cvCommentCount = "1";
-            mDatabaseComments = FirebaseDatabase.getInstance().getReference("comments").child(cvId);
-            String commentId = mDatabaseComments.push().getKey();
-            String comment = et_addComment.getText().toString();
-            String userID = firebaseUser.getUid();
-
-            Comment c = new Comment(commentId, comment, userID);
-            mDatabaseComments.child(commentId).setValue(c);
-            et_addComment.setText("");
-        }
-        else{
-            cvCommentCount  = "0";
-        }
-
-        DatabaseReference rootAppliedcv = mDatabaseAppliedcv.child(cvId);
-        rootAppliedcv.child("cvTitle").setValue(cvTitle);
-        rootAppliedcv.child("cvSkills").setValue(cvSkills);
-        rootAppliedcv.child("cvEmail").setValue(cvEmail);
-        rootAppliedcv.child("cvPhone").setValue(cvPhone);
-        rootAppliedcv.child("cvUrl").setValue(cvUrl);
-        rootAppliedcv.child("cvCommentCount").setValue(cvCommentCount);
-        rootAppliedcv.child("cvStarCount").setValue("0");
-
+        setAppliedCV();
         mDatabaseUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -258,7 +232,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                             .child(cvId)
                             .child(user.getUserId())
                             .setValue(true);
-                    sendNotification(firebaseUser.getUid(), user.getUserId(), "New CV");
+                    sendNotification(firebaseUser.getUid(), user.getUserId(), cvSkills, cvTitle);
                 }
             }
 
@@ -270,39 +244,63 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
     }
 
-
-    public void sendCVToUser(final String userId){
-        notify = true;
-        if(notify){
-
-            if(!et_addComment.getText().toString().trim().equals("")){
-
-                cvCommentCount = "1";
-                mDatabaseComments = FirebaseDatabase.getInstance().getReference("comments").child(cvId);
-                String commentId = mDatabaseComments.push().getKey();
-                String comment = et_addComment.getText().toString();
-                String userID = firebaseUser.getUid();
-
-                Comment c = new Comment(commentId, comment, userID);
-                mDatabaseComments.child(commentId).setValue(c);
-                et_addComment.setText("");
+    private void setCommentCount(final String cvId){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comments").child(cvId);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mDatabaseAppliedcv.child(cvId).child("cvCommentCount").setValue(dataSnapshot.getChildrenCount()+"");
             }
-            else{
-                cvCommentCount  = "0";
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
+        });
+    }
 
-            DatabaseReference rootAppliedcv = mDatabaseAppliedcv.child(cvId);
-            rootAppliedcv.child("cvTitle").setValue(cvTitle);
-            rootAppliedcv.child("cvSkills").setValue(cvSkills);
-            rootAppliedcv.child("cvEmail").setValue(cvEmail);
-            rootAppliedcv.child("cvPhone").setValue(cvPhone);
-            rootAppliedcv.child("cvUrl").setValue(cvUrl);
-            rootAppliedcv.child("cvCommentCount").setValue(cvCommentCount);
-            rootAppliedcv.child("cvStarCount").setValue("0");
+    private void setStarCount(final String cvId){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Stars").child(cvId);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mDatabaseAppliedcv.child(cvId).child("cvStarCount").setValue(dataSnapshot.getChildrenCount()+"");
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            sendNotification(firebaseUser.getUid(), userId, "New CV");
-            notify = false;
+            }
+        });
+    }
+
+    private void addComment(String comment){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comments").child(cvId);
+        String commentId = reference.push().getKey();
+        String userID = firebaseUser.getUid();
+        Comment c = new Comment(commentId, comment, userID);
+        reference.child(commentId).setValue(c);
+    }
+
+    private void setAppliedCV(){
+        if (!et_addComment.getText().toString().trim().equals("")) {
+            addComment(et_addComment.getText().toString().trim());
+            et_addComment.setText("");
         }
+
+        DatabaseReference rootAppliedcv = mDatabaseAppliedcv.child(cvId);
+        rootAppliedcv.child("cvTitle").setValue(cvTitle);
+        rootAppliedcv.child("cvSkills").setValue(cvSkills);
+        rootAppliedcv.child("cvEmail").setValue(cvEmail);
+        rootAppliedcv.child("cvPhone").setValue(cvPhone);
+        rootAppliedcv.child("cvUrl").setValue(cvUrl);
+        setCommentCount(cvId);
+        setStarCount(cvId);
+    }
+
+    public void sendCVToUser(final String userId) {
+
+        setAppliedCV();
+        sendNotification(firebaseUser.getUid(), userId, cvSkills, cvTitle);
         mDatabaseSendToUsers
                 .child(cvId)
                 .child(userId)
@@ -320,9 +318,8 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                     }
                 });
 
+
     }
-
-
     public void initializeUsers(){
 
         mDatabaseUsers.addValueEventListener(new ValueEventListener() {
@@ -399,7 +396,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         return false;
     }
 
-    private void sendNotification(final String sender, final String receiver, final String message){
+    private void sendNotification(final String sender, final String receiver, final String cvTitle, final String cvSkills){
 
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("tokens");
         Query query = tokens.orderByKey().equalTo(receiver);
@@ -409,7 +406,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(firebaseUser.getUid(), R.mipmap.ic_launcher, "", "New CV",receiver);
+                    Data data = new Data(firebaseUser.getUid(), R.drawable.ic_stat_name,cvSkills, cvTitle,receiver);
                     Sender sender = new Sender(data, token.getToken());
 
                     apiService.sendNotification(sender)
@@ -428,7 +425,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
                                 }
                             });
-
 
                 }
             }

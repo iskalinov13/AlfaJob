@@ -76,8 +76,6 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
         recyclerView.setAdapter(adapterVacancy);
         adapterVacancy.setClickListener(this);
 
-
-
         initializeData();
         checkIfempty();
 

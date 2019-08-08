@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.alfajob.Fragments.ApprovedFragment;
 import com.example.alfajob.Fragments.FragmentHome;
 import com.example.alfajob.Fragments.FragmentHomeUser;
 import com.example.alfajob.Fragments.FragmentVacancies;
@@ -231,6 +232,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_aproved_resumes) {
             getSupportActionBar().setTitle(item.getTitle());
+            fragment = new ApprovedFragment();
+            fab.hide();
 
         } else if (id == R.id.nav_import_files) {
             getSupportActionBar().setTitle(item.getTitle());

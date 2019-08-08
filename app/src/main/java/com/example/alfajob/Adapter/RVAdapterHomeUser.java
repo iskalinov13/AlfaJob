@@ -123,6 +123,7 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
                 Intent intent = new Intent(mContext, CommentActivity.class);
                 intent.putExtra("cvId", mData.get(viewHolder.getAdapterPosition()).getId());
                 intent.putExtra("userId", userId);
+                intent.putExtra("fragmentName", "AppliedCV");
                 mContext.startActivity(intent);
             }
         });

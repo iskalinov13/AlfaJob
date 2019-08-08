@@ -40,11 +40,11 @@ public class CommentActivity extends AppCompatActivity {
     CircleImageView civ_profile;
     TextView tv_post;
 
-    String cvId, userId;
+    String cvId, userId, fragmentName;
 
     FirebaseUser firebaseUser;
     FirebaseAuth mAuth;
-    DatabaseReference mDatabaseComments, mDatabaseUsers, mDatabaseAppliedcv;
+    DatabaseReference mDatabaseComments, mDatabaseUsers, mDatabaseAppliedcv, mDatabaseApproved;
 
     RecyclerView mRecyclerView;
     public List<Comment> listComments;
@@ -74,12 +74,14 @@ public class CommentActivity extends AppCompatActivity {
         Intent intent= getIntent();
         cvId = intent.getStringExtra("cvId");
         userId = intent.getStringExtra("userId");
+        fragmentName = intent.getStringExtra("fragmentName");
 
         //init db, user
         mAuth = FirebaseAuth.getInstance();
         firebaseUser = mAuth.getCurrentUser();
         mDatabaseAppliedcv = FirebaseDatabase.getInstance().getReference("appliedcv");
         mDatabaseComments = FirebaseDatabase.getInstance().getReference("comments").child(cvId);
+        mDatabaseApproved = FirebaseDatabase.getInstance().getReference("approved");
 
         // Action bat style
         ActionBar bar = getSupportActionBar();
@@ -95,7 +97,7 @@ public class CommentActivity extends AppCompatActivity {
                     Toast.makeText(CommentActivity.this, "You can't send emty comment.", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    addComment();
+                    addComment(fragmentName);
                 }
             }
         });
@@ -141,7 +143,7 @@ public class CommentActivity extends AppCompatActivity {
 
     }
 
-    private void addComment(){
+    private void addComment(final String fragmentName){
 
         mDatabaseComments = FirebaseDatabase.getInstance().getReference("comments").child(cvId);
         String commentId = mDatabaseComments.push().getKey();
@@ -155,7 +157,13 @@ public class CommentActivity extends AppCompatActivity {
         mDatabaseComments.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mDatabaseAppliedcv.child(cvId).child("cvCommentCount").setValue(dataSnapshot.getChildrenCount()+"");
+                if(fragmentName.equals("AppliedCV")){
+                    mDatabaseAppliedcv.child(cvId).child("cvCommentCount").setValue(dataSnapshot.getChildrenCount()+"");
+                }
+                else if(fragmentName.equals("ApprovedCV")){
+                    mDatabaseApproved.child(cvId).child("cvCommentCount").setValue(dataSnapshot.getChildrenCount()+"");
+                }
+
             }
 
             @Override

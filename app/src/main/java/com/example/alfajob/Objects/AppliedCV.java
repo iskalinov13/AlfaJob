@@ -4,6 +4,9 @@ public class AppliedCV {
 
     private String id, cvTitle, cvSkills,  userEmail, userPhone, cvUrl, starCount, commentCount;
 
+    public AppliedCV() {
+    }
+
     public AppliedCV(String id, String cvTitle, String cvSkills, String userEmail, String userPhone, String cvUrl, String starCount, String commentCount) {
         this.id = id;
         this.cvTitle = cvTitle;

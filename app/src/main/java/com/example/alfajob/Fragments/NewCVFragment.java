@@ -208,44 +208,19 @@ public class NewCVFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                firebaseSearch(query);
+                search(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                firebaseSearch(newText);
+                search(newText);
                 return false;
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void firebaseSearch(String searchText){
-        Query query = mDatabaseNewcv.orderByChild("cvTitle").startAt(searchText).endAt(searchText + "\uf8ff");
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                listNewCV.clear();
-                for (DataSnapshot childSnap : dataSnapshot.getChildren()){
-                    NewCV newCV = new NewCV(childSnap.getKey(),
-                            childSnap.child("cvTitle").getValue().toString(),
-                            childSnap.child("cvEmail").getValue().toString(),
-                            childSnap.child("cvPhone").getValue().toString(),
-                            childSnap.child("cvUrl").getValue().toString());
-                    listNewCV.add(newCV);
 
-                    recyclerViewAdapter = new RVAdapterNewCV(getContext(),listNewCV);
-                    myrecyclerView.setAdapter(recyclerViewAdapter);
-                }
-                pd.dismiss();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
 }

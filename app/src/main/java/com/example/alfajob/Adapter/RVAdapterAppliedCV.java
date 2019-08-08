@@ -30,10 +30,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alfajob.Activities.CommentActivity;
 import com.example.alfajob.Objects.AppliedCV;
+import com.example.alfajob.Objects.ApprovedCV;
+import com.example.alfajob.Objects.Comment;
 import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -109,64 +112,10 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
 
                         final int position = viewHolder.getAdapterPosition();
                         final String cvId = mData.get(position).getId();
-
-                        mDatabaseAppliedcv.child(mData.get(position).getId()).removeValue()
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        notifyItemRemoved(position);
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                        mDatabaseSendToUsers.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                if(dataSnapshot.hasChild(cvId)){
-                                    mDatabaseSendToUsers.child(cvId).removeValue();
-                                }
-
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        mDatabaseStar.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                if(dataSnapshot.hasChild(cvId)){
-                                    mDatabaseStar.child(cvId).removeValue();
-                                }
-
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        mDatabaseComments.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                if(dataSnapshot.hasChild(cvId)){
-                                    mDatabaseComments.child(cvId).removeValue();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+                       // deleteAppliedCV(position);
+                        mData.remove(position);
+                        notifyItemRemoved(position);
+                        deleteAppliedCVStars(position, cvId);
 
                     }
                 });
@@ -209,7 +158,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                 btn_yes.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        approveCV(mData.get(viewHolder.getAdapterPosition()).getId());
+                        approveCV(mData.get(viewHolder.getAdapterPosition()));
                         dialogView.dismiss();
                     }
                 });
@@ -251,6 +200,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                 Intent intent = new Intent(mContext, CommentActivity.class);
                 intent.putExtra("cvId", mData.get(viewHolder.getAdapterPosition()).getId());
                 intent.putExtra("userId", userId);
+                intent.putExtra("fragmentName", "AppliedCV");
                 mContext.startActivity(intent);
             }
         });
@@ -312,10 +262,115 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         return viewHolder;
 
     }
+    private void deleteAppliedCVStars(final int position, final String cvId){
+        mDatabaseStar.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-    private void approveCV(String cvId){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("approved");
+                if(dataSnapshot.hasChild(cvId)){
+                    mDatabaseStar.child(cvId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            deleteAppliedCVComment(position, cvId);
+                        }
+                    });
+                }
+                else{
+                    deleteAppliedCVComment(position, cvId);
+                }
 
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void deleteAppliedCVComment(final int position, final String cvId){
+        mDatabaseComments.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.hasChild(cvId)){
+                    mDatabaseComments.child(cvId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            deleteAppliedCVSend(position, cvId);
+                        }
+                    });
+                }
+                else{
+                    deleteAppliedCVSend(position, cvId);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void deleteAppliedCVSend(final int position,final String cvId){
+        mDatabaseSendToUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.hasChild(cvId)){
+                    mDatabaseSendToUsers.child(cvId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            deleteAppliedCV(position, cvId);
+                        }
+                    });
+                }
+                else{
+                    deleteAppliedCV(position, cvId);
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    private void deleteAppliedCV(final int position, final String cvId){
+        mDatabaseAppliedcv.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.hasChild(cvId)){
+                    mDatabaseAppliedcv.child(cvId).removeValue();
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    private void approveCV(AppliedCV cv){
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("approved").child(cv.getId());
+        ApprovedCV approvedCV = new ApprovedCV(cv.getId(), cv.getCvTitle(), cv.getCvSkills(), cv.getUserEmail(), cv.getUserPhone(), cv.getCvUrl(), cv.getStarCount(), cv.getCommentCount());
+        reference.setValue(approvedCV);
+//        reference.child("cvTitle").setValue(cv.getCvTitle());
+//        reference.child("cvSkills").setValue(cv.getCvSkills());
+//        reference.child("cvUserEmail").setValue(cv.getUserEmail());
+//        reference.child("cvUserPhone").setValue(cv.getUserPhone());
+//        reference.child("cvUrl").setValue(cv.getCvUrl());
+//        reference.child("cvStarCount").setValue(cv.getStarCount());
+//        reference.child("cvCommentCount").setValue(cv.getCommentCount());
+
+        mDatabaseAppliedcv.child(cv.getId()).removeValue();
+        mDatabaseSendToUsers.child(cv.getId()).removeValue();
+        notifyItemRemoved(mData.indexOf(cv));
+        mData.remove(cv);
     }
     private void seeStars(int position){
 

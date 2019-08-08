@@ -25,7 +25,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,19 +82,21 @@ public class AppliedCVFragment extends Fragment {
                 listAppliedCV.clear();
                 for (DataSnapshot childSnap : dataSnapshot.getChildren()){
                     AppliedCV appliedCV;
-                    appliedCV = new AppliedCV(childSnap.getKey(),
-                            childSnap.child("cvTitle").getValue(String.class),
-                            childSnap.child("cvSkills").getValue(String.class),
-                            childSnap.child("cvEmail").getValue(String.class),
-                            childSnap.child("cvPhone").getValue(String.class),
-                            childSnap.child("cvUrl").getValue(String.class),
-                            childSnap.child("cvStarCount").getValue(String.class),
-                            childSnap.child("cvCommentCount").getValue(String.class));
-                    listAppliedCV.add(appliedCV);
+                        appliedCV = new AppliedCV(childSnap.getKey(),
+                                childSnap.child("cvTitle").getValue(String.class),
+                                childSnap.child("cvSkills").getValue(String.class),
+                                childSnap.child("cvEmail").getValue(String.class),
+                                childSnap.child("cvPhone").getValue(String.class),
+                                childSnap.child("cvUrl").getValue(String.class),
+                                childSnap.child("cvStarCount").getValue(String.class),
+                                childSnap.child("cvCommentCount").getValue(String.class));
+                        listAppliedCV.add(appliedCV);
 
-                    recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
-                    myrecyclerView.setAdapter(recyclerViewAdapter);
+                       // recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
+                        //myrecyclerView.setAdapter(recyclerViewAdapter);
                 }
+                recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
+                myrecyclerView.setAdapter(recyclerViewAdapter);
                 pd.dismiss();
             }
 

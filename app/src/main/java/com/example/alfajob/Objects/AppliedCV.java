@@ -2,12 +2,12 @@ package com.example.alfajob.Objects;
 
 public class AppliedCV {
 
-    private String id, cvTitle, cvSkills,  userEmail, userPhone, cvUrl, starCount, commentCount;
+    private String id, cvTitle, cvSkills,  userEmail, userPhone, cvUrl, starCount, commentCount, cvStatus;
 
     public AppliedCV() {
     }
 
-    public AppliedCV(String id, String cvTitle, String cvSkills, String userEmail, String userPhone, String cvUrl, String starCount, String commentCount) {
+    public AppliedCV(String id, String cvTitle, String cvSkills, String userEmail, String userPhone, String cvUrl, String starCount, String commentCount, String cvStatus) {
         this.id = id;
         this.cvTitle = cvTitle;
         this.cvSkills = cvSkills;
@@ -16,6 +16,7 @@ public class AppliedCV {
         this.cvUrl = cvUrl;
         this.starCount = starCount;
         this.commentCount = commentCount;
+        this.cvStatus = cvStatus;
     }
 
     public String getId() {
@@ -80,5 +81,13 @@ public class AppliedCV {
 
     public void setCommentCount(String commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public String getCvStatus() {
+        return cvStatus;
+    }
+
+    public void setCvStatus(String cvStatus) {
+        this.cvStatus = cvStatus;
     }
 }

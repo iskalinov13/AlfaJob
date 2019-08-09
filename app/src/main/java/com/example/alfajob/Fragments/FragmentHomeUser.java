@@ -2,8 +2,6 @@ package com.example.alfajob.Fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,10 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SearchView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuItemCompat;
@@ -24,10 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.example.alfajob.Adapter.RVAdapterHomeUser;
-import com.example.alfajob.Adapter.RVAdapterStar;
-import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.AppliedCV;
-import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,22 +30,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FragmentHomeUser extends Fragment {
     private RecyclerView myrecyclerView;
 
     private List<AppliedCV> listAppliedCV = new ArrayList<>();
-    private List<String> listOfCVId = new ArrayList<>();
+    private Map<String,Boolean> listOfCVId = new HashMap<>();
     private DatabaseReference mDatabaseAppliedcv, mDatabaseSend;
     private RVAdapterHomeUser recyclerViewAdapter;
     private PullRefreshLayout pullRefreshLayout;
     private ProgressDialog pd;
     private FirebaseUser firebaseUser;
     private FirebaseAuth mAuth;
-    private Boolean isStarted = false;
-    private Boolean isVisible = false;
-    private Dialog dialogView;
 
 
     @Nullable
@@ -138,21 +129,39 @@ public class FragmentHomeUser extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listAppliedCV.clear();
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    if(listOfCVId.contains(dataSnapshot1.getKey())) {
-                        if (dataSnapshot1.child("cvSkills").getValue().toString().toLowerCase().contains(s) || (dataSnapshot1.child("cvTitle").getValue().toString().toLowerCase().contains(s))) {
-                            AppliedCV appliedCV;
-                            appliedCV = new AppliedCV(dataSnapshot1.getKey(),
-                                    dataSnapshot1.child("cvTitle").getValue(String.class),
-                                    dataSnapshot1.child("cvSkills").getValue(String.class),
-                                    dataSnapshot1.child("cvEmail").getValue(String.class),
-                                    dataSnapshot1.child("cvPhone").getValue(String.class),
-                                    dataSnapshot1.child("cvUrl").getValue(String.class),
-                                    dataSnapshot1.child("cvStarCount").getValue(String.class),
-                                    dataSnapshot1.child("cvCommentCount").getValue(String.class));
-                            listAppliedCV.add(appliedCV);
-                            recyclerViewAdapter = new RVAdapterHomeUser(getContext(), listAppliedCV);
-                            myrecyclerView.setAdapter(recyclerViewAdapter);
+                for (DataSnapshot childSnap : dataSnapshot.getChildren()){
+                    if(listOfCVId.containsKey(childSnap.getKey())) {
+                        if (childSnap.child("cvSkills").getValue().toString().toLowerCase().contains(s) || (childSnap.child("cvTitle").getValue().toString().toLowerCase().contains(s))) {
+                            if(listOfCVId.get(childSnap.getKey())){
+                                AppliedCV appliedCV;
+                                appliedCV = new AppliedCV(childSnap.getKey(),
+                                        childSnap.child("cvTitle").getValue(String.class),
+                                        childSnap.child("cvSkills").getValue(String.class),
+                                        childSnap.child("cvEmail").getValue(String.class),
+                                        childSnap.child("cvPhone").getValue(String.class),
+                                        childSnap.child("cvUrl").getValue(String.class),
+                                        childSnap.child("cvStarCount").getValue(String.class),
+                                        childSnap.child("cvCommentCount").getValue(String.class),
+                                        "Прочитано");
+                                listAppliedCV.add(appliedCV);
+                                recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
+                                myrecyclerView.setAdapter(recyclerViewAdapter);
+                            }
+                            else{
+                                AppliedCV appliedCV;
+                                appliedCV = new AppliedCV(childSnap.getKey(),
+                                        childSnap.child("cvTitle").getValue(String.class),
+                                        childSnap.child("cvSkills").getValue(String.class),
+                                        childSnap.child("cvEmail").getValue(String.class),
+                                        childSnap.child("cvPhone").getValue(String.class),
+                                        childSnap.child("cvUrl").getValue(String.class),
+                                        childSnap.child("cvStarCount").getValue(String.class),
+                                        childSnap.child("cvCommentCount").getValue(String.class),
+                                        "Не прочитано");
+                                listAppliedCV.add(appliedCV);
+                                recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
+                                myrecyclerView.setAdapter(recyclerViewAdapter);
+                            }
 
                         }
                     }
@@ -176,8 +185,7 @@ public class FragmentHomeUser extends Fragment {
                 for (DataSnapshot childSnap : dataSnapshot.getChildren()){
                     String cvId = childSnap.getKey();
                     if(childSnap.hasChild(firebaseUser.getUid())){
-                        listOfCVId.add(cvId);
-                        System.out.println(cvId);
+                        listOfCVId.put(cvId, childSnap.child(firebaseUser.getUid()).getValue(Boolean.class));
                     }
                 }
                 retrieveData();
@@ -199,20 +207,37 @@ public class FragmentHomeUser extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listAppliedCV.clear();
                 for (DataSnapshot childSnap : dataSnapshot.getChildren()){
-                    if(listOfCVId.contains(childSnap.getKey())){
-                        AppliedCV appliedCV;
-                        appliedCV = new AppliedCV(childSnap.getKey(),
-                                childSnap.child("cvTitle").getValue(String.class),
-                                childSnap.child("cvSkills").getValue(String.class),
-                                childSnap.child("cvEmail").getValue(String.class),
-                                childSnap.child("cvPhone").getValue(String.class),
-                                childSnap.child("cvUrl").getValue(String.class),
-                                childSnap.child("cvStarCount").getValue(String.class),
-                                childSnap.child("cvCommentCount").getValue(String.class));
-
-                        listAppliedCV.add(appliedCV);
-                        recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
-                        myrecyclerView.setAdapter(recyclerViewAdapter);
+                    if(listOfCVId.containsKey(childSnap.getKey())){
+                        if(listOfCVId.get(childSnap.getKey())){
+                            AppliedCV appliedCV;
+                            appliedCV = new AppliedCV(childSnap.getKey(),
+                                    childSnap.child("cvTitle").getValue(String.class),
+                                    childSnap.child("cvSkills").getValue(String.class),
+                                    childSnap.child("cvEmail").getValue(String.class),
+                                    childSnap.child("cvPhone").getValue(String.class),
+                                    childSnap.child("cvUrl").getValue(String.class),
+                                    childSnap.child("cvStarCount").getValue(String.class),
+                                    childSnap.child("cvCommentCount").getValue(String.class),
+                                    "Прочитано");
+                            listAppliedCV.add(appliedCV);
+                            recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
+                            myrecyclerView.setAdapter(recyclerViewAdapter);
+                        }
+                        else{
+                            AppliedCV appliedCV;
+                            appliedCV = new AppliedCV(childSnap.getKey(),
+                                    childSnap.child("cvTitle").getValue(String.class),
+                                    childSnap.child("cvSkills").getValue(String.class),
+                                    childSnap.child("cvEmail").getValue(String.class),
+                                    childSnap.child("cvPhone").getValue(String.class),
+                                    childSnap.child("cvUrl").getValue(String.class),
+                                    childSnap.child("cvStarCount").getValue(String.class),
+                                    childSnap.child("cvCommentCount").getValue(String.class),
+                                    "Не прочитано");
+                            listAppliedCV.add(appliedCV);
+                            recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
+                            myrecyclerView.setAdapter(recyclerViewAdapter);
+                        }
                     }
                 }
                 recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);

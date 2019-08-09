@@ -81,7 +81,8 @@ public class AppliedCVFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listAppliedCV.clear();
                 for (DataSnapshot childSnap : dataSnapshot.getChildren()){
-                    AppliedCV appliedCV;
+                    if(childSnap.child("cvTitle").getValue(String.class) != null){
+                        AppliedCV appliedCV;
                         appliedCV = new AppliedCV(childSnap.getKey(),
                                 childSnap.child("cvTitle").getValue(String.class),
                                 childSnap.child("cvSkills").getValue(String.class),
@@ -89,11 +90,13 @@ public class AppliedCVFragment extends Fragment {
                                 childSnap.child("cvPhone").getValue(String.class),
                                 childSnap.child("cvUrl").getValue(String.class),
                                 childSnap.child("cvStarCount").getValue(String.class),
-                                childSnap.child("cvCommentCount").getValue(String.class));
+                                childSnap.child("cvCommentCount").getValue(String.class),
+                                childSnap.child("cvStatus").getValue(String.class));
                         listAppliedCV.add(appliedCV);
-
-                       // recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
-                        //myrecyclerView.setAdapter(recyclerViewAdapter);
+                    }
+                    else{
+                        childSnap.getRef().removeValue();
+                    }
                 }
                 recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
                 myrecyclerView.setAdapter(recyclerViewAdapter);
@@ -156,7 +159,8 @@ public class AppliedCVFragment extends Fragment {
                                 dataSnapshot1.child("cvPhone").getValue(String.class),
                                 dataSnapshot1.child("cvUrl").getValue(String.class),
                                 dataSnapshot1.child("cvStarCount").getValue(String.class),
-                                dataSnapshot1.child("cvCommentCount").getValue(String.class));
+                                dataSnapshot1.child("cvCommentCount").getValue(String.class),
+                                dataSnapshot1.child("cvStatus").getValue(String.class));
                         listAppliedCV.add(appliedCV);
 
                         recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);

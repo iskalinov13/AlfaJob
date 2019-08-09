@@ -228,23 +228,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             fab.hide();
 
         } else if (id == R.id.nav_settings) {
-            getSupportActionBar().setTitle(item.getTitle());
+            Intent intent = new Intent(this, AccountSettingsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_aproved_resumes) {
             getSupportActionBar().setTitle(item.getTitle());
             fragment = new ApprovedFragment();
             fab.hide();
 
-        } else if (id == R.id.nav_import_files) {
-            getSupportActionBar().setTitle(item.getTitle());
-
         } else if (id == R.id.nav_sign_out) {
             getSupportActionBar().setTitle(item.getTitle());
             mAuth.signOut();
             sentToLoginActivity();
-
         }
-
         //replacing the fragment
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

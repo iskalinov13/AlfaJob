@@ -231,7 +231,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                     mDatabaseSendToUsers
                             .child(cvId)
                             .child(user.getUserId())
-                            .setValue(true);
+                            .setValue(false);
                     sendNotification(firebaseUser.getUid(), user.getUserId(), cvSkills, cvTitle);
                 }
             }
@@ -241,7 +241,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
             }
         });
-
     }
 
     private void setCommentCount(final String cvId){
@@ -295,6 +294,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         rootAppliedcv.child("cvUrl").setValue(cvUrl);
         setCommentCount(cvId);
         setStarCount(cvId);
+        rootAppliedcv.child("cvStatus").setValue("Не прочитано");
     }
 
     public void sendCVToUser(final String userId) {
@@ -304,7 +304,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         mDatabaseSendToUsers
                 .child(cvId)
                 .child(userId)
-                .setValue(true)
+                .setValue(false)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

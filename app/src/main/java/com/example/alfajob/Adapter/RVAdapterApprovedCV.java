@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.ApprovedCV;
-import com.example.alfajob.Objects.ApprovedCV;
-import com.example.alfajob.Objects.Vacancy;
+
 import com.example.alfajob.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,7 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RVAdapterApprovedCV  extends RecyclerView.Adapter<RVAdapterApprovedCV.MyViewHolder>{
 

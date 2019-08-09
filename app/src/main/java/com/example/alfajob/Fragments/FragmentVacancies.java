@@ -223,7 +223,6 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
         int id = item.getItemId();
         if(id == R.id.action_search){
             //TODO
-            System.out.println("hello world");
             return true;
         }
 

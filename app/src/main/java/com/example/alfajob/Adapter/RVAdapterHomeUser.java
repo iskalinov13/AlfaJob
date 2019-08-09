@@ -86,33 +86,11 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
         viewHolder.btn_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabaseSendToUsers.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.child(mData.get(viewHolder.getAdapterPosition()).getId()).hasChild(mAuth.getCurrentUser().getUid())) {
 
-                                if (dataSnapshot.child(mData.get(viewHolder.getAdapterPosition()).getId()).
-                                        child(mAuth.getCurrentUser().getUid()).getValue(Boolean.class)){
-                                    mDatabaseSendToUsers.child(mData.get(viewHolder.getAdapterPosition()).getId()).child(mAuth.getCurrentUser().getUid()).setValue(false);
-                                    notifyItemChanged(viewHolder.getAdapterPosition());
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mData.get(viewHolder.getAdapterPosition()).getCvUrl()));
-                                    mContext.startActivity(intent);
-
-                                }
-                                else{
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mData.get(viewHolder.getAdapterPosition()).getCvUrl()));
-                                    mContext.startActivity(intent);
-                                }
-
-                            }
-                        }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
+                mDatabaseSendToUsers.child(mData.get(viewHolder.getAdapterPosition()).getId()).child(mAuth.getCurrentUser().getUid()).setValue(true);
+                notifyItemChanged(viewHolder.getAdapterPosition());
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mData.get(viewHolder.getAdapterPosition()).getCvUrl()));
+                mContext.startActivity(intent);
 
             }
         });
@@ -190,9 +168,6 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
         dialogView = new Dialog(mContext);
         dialogView.setContentView(R.layout.dialog_star);
         dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//        if(dialogView.getWindow() != null){
-//            dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        }
 
         List<User> listUsers = getUsersList(getUsersId(mData.get(position).getId()));
 
@@ -264,6 +239,7 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
         holder.tv_skills.setText(mData.get(i).getCvSkills());
         holder.tv_star_count.setText(mData.get(i).getStarCount());
         holder.tv_comment_count.setText(mData.get(i).getCommentCount());
+        holder.tv_notification.setText(mData.get(i).getCvStatus());
         holder.setStarBtn(mData.get(i).getId());
         //holder.setNotification(mAuth.getCurrentUser().getUid(),mData.get(i).getId(),mContext);
     }
@@ -286,7 +262,7 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
         private TextView tv_comment_count;
         private ImageView iv_star;
         private ImageView iv_comment;
-        private ImageView iv_notification;
+        private TextView tv_notification;
         private Button btn_view;
 
         private FirebaseAuth mAuth;
@@ -305,7 +281,7 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
             tv_comment_count = (TextView) itemView.findViewById(R.id.tv_commentcount_homeuser);
             iv_star = (ImageView) itemView.findViewById(R.id.iv_star_homeuser);
             iv_comment = (ImageView) itemView.findViewById(R.id.iv_comment_homeuser);
-            iv_notification = itemView.findViewById(R.id.iv_notification_homeuser);
+            tv_notification = itemView.findViewById(R.id.tv_notification_homeuser);
             btn_view = (Button) itemView.findViewById(R.id.btn_view_homeuser);
 
 
@@ -336,7 +312,6 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
                         iv_star.setImageResource(R.drawable.ic_star_24px_outlined);
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -344,30 +319,6 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
             });
         }
 
-
-        public void setNotification(final String userId, final String cvId, final Context context){
-            mDatabaseSend.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    if (dataSnapshot.child(cvId).child(mAuth.getCurrentUser().getUid()).getValue(Boolean.class)) {
-                        Animation animScale = AnimationUtils.loadAnimation(context,R.anim.anim_scale);
-                        iv_notification.setImageResource(R.drawable.ic_notifications_on_24px);
-                        iv_notification.startAnimation(animScale);
-
-                    }
-                    else {
-
-                        iv_notification.setImageResource(R.drawable.ic_notifications_24px);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
 
 
 

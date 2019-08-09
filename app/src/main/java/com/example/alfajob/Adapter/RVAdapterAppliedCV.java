@@ -112,10 +112,11 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
 
                         final int position = viewHolder.getAdapterPosition();
                         final String cvId = mData.get(position).getId();
-                       // deleteAppliedCV(position);
-                        mData.remove(position);
-                        notifyItemRemoved(position);
+
                         deleteAppliedCVStars(position, cvId);
+                        deleteAppliedCVComment(position, cvId);
+                        deleteAppliedCVSend(position, cvId);
+                        deleteAppliedCV(position, cvId);
 
                     }
                 });
@@ -296,12 +297,9 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                     mDatabaseComments.child(cvId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            deleteAppliedCVSend(position, cvId);
+                            //deleteAppliedCVSend(position, cvId);
                         }
                     });
-                }
-                else{
-                    deleteAppliedCVSend(position, cvId);
                 }
             }
 
@@ -321,13 +319,11 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                     mDatabaseSendToUsers.child(cvId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            deleteAppliedCV(position, cvId);
+                            //deleteAppliedCV(position, cvId);
                         }
                     });
                 }
-                else{
-                    deleteAppliedCV(position, cvId);
-                }
+
 
             }
             @Override
@@ -355,10 +351,10 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
 
 
     private void approveCV(AppliedCV cv){
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("approved").child(cv.getId());
         ApprovedCV approvedCV = new ApprovedCV(cv.getId(), cv.getCvTitle(), cv.getCvSkills(), cv.getUserEmail(), cv.getUserPhone(), cv.getCvUrl(), cv.getStarCount(), cv.getCommentCount());
         reference.setValue(approvedCV);
+
 //        reference.child("cvTitle").setValue(cv.getCvTitle());
 //        reference.child("cvSkills").setValue(cv.getCvSkills());
 //        reference.child("cvUserEmail").setValue(cv.getUserEmail());
@@ -372,6 +368,7 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         notifyItemRemoved(mData.indexOf(cv));
         mData.remove(cv);
     }
+
     private void seeStars(int position){
 
         dialogView = new Dialog(mContext);

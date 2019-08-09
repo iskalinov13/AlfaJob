@@ -1,6 +1,4 @@
 package com.example.alfajob.Fragments;
-
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;

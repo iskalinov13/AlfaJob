@@ -272,12 +272,12 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
                     mDatabaseStar.child(cvId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            deleteAppliedCVComment(position, cvId);
+                            ///deleteAppliedCVComment(position, cvId);
                         }
                     });
                 }
                 else{
-                    deleteAppliedCVComment(position, cvId);
+                    //deleteAppliedCVComment(position, cvId);
                 }
 
             }
@@ -355,13 +355,6 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         ApprovedCV approvedCV = new ApprovedCV(cv.getId(), cv.getCvTitle(), cv.getCvSkills(), cv.getUserEmail(), cv.getUserPhone(), cv.getCvUrl(), cv.getStarCount(), cv.getCommentCount());
         reference.setValue(approvedCV);
 
-//        reference.child("cvTitle").setValue(cv.getCvTitle());
-//        reference.child("cvSkills").setValue(cv.getCvSkills());
-//        reference.child("cvUserEmail").setValue(cv.getUserEmail());
-//        reference.child("cvUserPhone").setValue(cv.getUserPhone());
-//        reference.child("cvUrl").setValue(cv.getCvUrl());
-//        reference.child("cvStarCount").setValue(cv.getStarCount());
-//        reference.child("cvCommentCount").setValue(cv.getCommentCount());
 
         mDatabaseAppliedcv.child(cv.getId()).removeValue();
         mDatabaseSendToUsers.child(cv.getId()).removeValue();

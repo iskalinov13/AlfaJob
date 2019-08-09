@@ -48,7 +48,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -285,6 +287,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
             addComment(et_addComment.getText().toString().trim());
             et_addComment.setText("");
         }
+
 
         DatabaseReference rootAppliedcv = mDatabaseAppliedcv.child(cvId);
         rootAppliedcv.child("cvTitle").setValue(cvTitle);

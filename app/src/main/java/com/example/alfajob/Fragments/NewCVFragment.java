@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.baoyz.widget.PullRefreshLayout;
 import com.example.alfajob.Adapter.RVAdapterNewCV;
 import com.example.alfajob.Interface.JsonPlaceHolderApi;
-import com.example.alfajob.Notifications.Data;
 import com.example.alfajob.Objects.NewCV;
 import com.example.alfajob.R;
 
@@ -28,7 +27,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -100,7 +98,7 @@ public class NewCVFragment extends Fragment {
     }
 
     private void search(String text){
-        final String s =text;
+        final String s =text.toLowerCase();
 
         mDatabaseNewcv.addValueEventListener(new ValueEventListener() {
             @Override
@@ -118,11 +116,11 @@ public class NewCVFragment extends Fragment {
 
                         recyclerViewAdapter = new RVAdapterNewCV(getContext(),listNewCV);
                         myrecyclerView.setAdapter(recyclerViewAdapter);
-
                     }
-                    pd.dismiss();
-
                 }
+
+                recyclerViewAdapter = new RVAdapterNewCV(getContext(),listNewCV);
+                myrecyclerView.setAdapter(recyclerViewAdapter);
             }
 
             @Override
@@ -192,8 +190,6 @@ public class NewCVFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_search){
-            //TODO
-            System.out.println("hello world");
             return true;
         }
 

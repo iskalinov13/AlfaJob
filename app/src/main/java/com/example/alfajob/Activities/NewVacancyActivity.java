@@ -41,6 +41,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NewVacancyActivity extends AppCompatActivity {
 
@@ -52,10 +54,12 @@ public class NewVacancyActivity extends AppCompatActivity {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReferenceVacancy, mReferenceUsers;
     private String title, description, date, userId, userName, userPhoto;
+    private String vId, uId, uName, photoUrl, vTitle, vDescription, vDate;
     private String hrId;
+    private Bundle extras;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_vacancy);
 
@@ -83,6 +87,24 @@ public class NewVacancyActivity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date d = new Date();
         tv_date.setText(formatter.format(d));
+
+        if (savedInstanceState == null){
+            extras = getIntent().getExtras();
+            if(extras != null){
+                vId = extras.getString("VACANCY ID");
+                uId = extras.getString("USER ID");
+                uName = extras.getString("USER NAME");
+                photoUrl = "photo_url";
+                vTitle = extras.getString("VACANCY TITLE");
+                vDescription = extras.getString("VACANCY DESCRIPTION");
+                vDate = extras.getString("VACANCY DATE");
+
+                et_jobTitle.setText(vTitle);
+                et_jobDescription.setText(vDescription);
+                tv_date.setText(vDate);
+            }
+
+        }
 
         //Vacancy
         date  = tv_date.getText().toString().trim();
@@ -116,7 +138,14 @@ public class NewVacancyActivity extends AppCompatActivity {
                 title = et_jobTitle.getText().toString().trim();
                 description = et_jobDescription.getText().toString().trim();
                 if(!TextUtils.isEmpty(title)&&!TextUtils.isEmpty(description)){
-                    createNewVacancy(title, description, date, userId, userName, userPhoto);
+                    if(extras != null){
+                        setVacancy(uId, userName, photoUrl, vTitle, vDescription, vDate, vId);
+                        System.out.println("Here is");
+                    }
+                    else{
+                        System.out.println("Here is also");
+                        createNewVacancy(title, description, date, userId, userName, userPhoto);
+                    }
                 }
                 else{
                     Toast.makeText(NewVacancyActivity.this, "Title and Description must not be empty.", Toast.LENGTH_SHORT).show();
@@ -165,13 +194,35 @@ public class NewVacancyActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    private void setVacancy(String uId, String userName, String photoUrl, final String vTitle, final String vDescription, String vDate, String vId){
+        System.out.println(vId+"HELLLLLLLLLOOOO"+uId);
+        Vacancy vacancy = new Vacancy(uId, userName, photoUrl, vTitle, vDescription, vDate, vId);
+//        Map map = new HashMap();
+//        map.put("userId", uId);
+//        map.put("userName", userName);
+//        map.put("imgUrl", photoUrl);
+//        map.put("vacancyTitle", vTitle);
+//        map.put("vacancyDescription", vDescription);
+//        map.put("vacancyDate", vDate);
+//        map.put("vacancyId", vId);
+
+        System.out.println(uId+userName+photoUrl+vTitle+vDescription+vDate+vId);
+        mReferenceVacancy.child(uId).child(vId).child("vacancyDescription").setValue(vDescription);
+        //System.out.println("UID"+uId+vId);
+        //sendToHR(vId,vacancy);
+
+        et_jobDescription.setText("");
+        et_jobTitle.setText("");
+        finish();
+    }
+
     private void createNewVacancy(final String title, final String description, final String date,
                                   final String userId, String userName, String userPhoto){
         String vacancyId = mReferenceVacancy.push().getKey();
         Vacancy vacancy = new Vacancy(userId, userName, userPhoto, title, description, date, vacancyId);
+        System.out.println(userId+userName+userPhoto+title);
         mReferenceVacancy.child(userId).child(vacancyId).setValue(vacancy);
         sendToHR(vacancyId, vacancy);
-
 
         et_jobDescription.setText("");
         et_jobTitle.setText("");

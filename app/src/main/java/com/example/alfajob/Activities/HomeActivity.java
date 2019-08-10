@@ -84,8 +84,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        tvNavHeaderUsername = (TextView) headerView.findViewById(R.id.tv_nav_header_username);
-        tvNavHeaderEmail = (TextView) headerView.findViewById(R.id.tv_nav_header_email);
+        tvNavHeaderUsername = headerView.findViewById(R.id.tv_nav_header_username);
+        tvNavHeaderEmail = headerView.findViewById(R.id.tv_nav_header_email);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -127,7 +127,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     searchView.setQuery(searchWrd, false);
                 }
             }
-
             return;
         }
     }
@@ -181,32 +180,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.home, menu);
-//        MenuItem item = menu.findItem(R.id.action_search);
-//        //searchView.setMenuItem(item);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        //creating fragment object
         Fragment fragment = null;
 
         if (id == R.id.nav_home) {

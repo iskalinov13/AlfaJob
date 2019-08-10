@@ -14,5 +14,16 @@
 
     </com.baoyz.widget.PullRefreshLayout>
 
+    <TextView
+        android:id="@+id/tv_no_data_newcv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/roboto"
+        android:gravity="center"
+        android:text="@string/no_data_found"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="18sp"
+        android:visibility="invisible"/>
 
 </FrameLayout>

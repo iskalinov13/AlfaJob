@@ -61,6 +61,7 @@ public class RVAdapterComment extends RecyclerView.Adapter<RVAdapterComment.MyVi
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         Comment comment = mData.get(i);
         holder.tv_comment.setText(comment.getComment());
+        holder.tv_date.setText(comment.getDate());
         holder.getUserInfo(holder.civ_profilePhoto, holder.tv_userName, comment.getUserId());
     }
 
@@ -74,7 +75,9 @@ public class RVAdapterComment extends RecyclerView.Adapter<RVAdapterComment.MyVi
 
         private CircleImageView civ_profilePhoto;
         private TextView tv_userName;
-        private  TextView tv_comment;
+        private TextView tv_comment;
+        private TextView tv_date;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,8 +85,7 @@ public class RVAdapterComment extends RecyclerView.Adapter<RVAdapterComment.MyVi
             civ_profilePhoto = itemView.findViewById(R.id.civ_profile_image_comment);
             tv_userName  = itemView.findViewById(R.id.tv_username_comment);
             tv_comment = itemView.findViewById(R.id.tv_comment_comment);
-            //btn_send.setOnClickListener(this);
-
+            tv_date = itemView.findViewById(R.id.tv_comment_date_date);
 
         }
 

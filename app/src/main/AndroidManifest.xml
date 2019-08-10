@@ -16,15 +16,19 @@
         <activity
             android:name=".Activities.WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
 
-            <action android:name="android.intent.action.VIEW" />
-        </intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
         </activity>
-        <activity android:name=".Activities.AccountSettingsActivity" />
+        <activity android:name=".Activities.AccountSettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.HomeActivity" />
+        </activity>
         <activity android:name=".Activities.NewVacancyActivity" />
         <activity android:name=".Activities.CommentActivity" />
         <activity android:name=".Activities.ApplyCVActivity">

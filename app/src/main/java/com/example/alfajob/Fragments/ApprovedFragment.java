@@ -55,6 +55,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
 
         initializeData();
         checkIfempty();
-
+        setHasOptionsMenu(true);
         return view;
     }
     private void checkIfempty(){
@@ -324,8 +325,8 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
 
     private void phoneCV(final int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Call");
-        builder.setMessage("Do you want to call to him/her ?");
+        builder.setTitle("Позвонить");
+        builder.setMessage("Do you want to call to him/her?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -373,34 +374,25 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
         startActivity(Intent.createChooser(emailIntent, "Choose an Email Client ..."));
     }
 
-    private void deleteApprovedCVStars(final String cvId){
+    private void deleteApprovedCVStars(final int position, final String cvId) {
         mReferenceStars.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.hasChild(cvId)){
-                    mReferenceStars.child(cvId).removeValue();
+                if (dataSnapshot.hasChild(cvId)) {
+                    mReferenceStars.child(cvId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            deleteApprovedCVComments(position, cvId);
+
+                        }
+                    });
+                } else {
+                    deleteApprovedCVComments(position, cvId);
                 }
 
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-    }
-    private void deleteApprovedCV(final int position){
-        mReferenceApproved.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot.hasChild(approvedCVList.get(position).getCvId())){
-                    mReferenceComments.child(approvedCVList.get(position).getCvId()).removeValue();
-                }
-                else{
-
-                }
-            }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -408,16 +400,20 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
         });
     }
 
-    private void removeApprovedCV(final int position){
+    private void removeApprovedCV(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Delete");
         builder.setMessage("Are you sure to delete this cv?");
         builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteApprovedCVComments(approvedCVList.get(position).getCvId());
-                deleteApprovedCVStars(approvedCVList.get(position).getCvId());
-                deleteApprovedCV(position);
+
+                final String cvId = approvedCVList.get(position).getCvId();
+                deleteApprovedCVStars(position, cvId);
+                //deleteApprovedCVComments(position, cvId);
+
+                // deleteApprovedCV(position);
+                adapterApproved.notifyItemRemoved(position);
             }
 
         });
@@ -431,18 +427,29 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
         builder.create().show();
     }
 
-    private void deleteApprovedCVComments(final String cvId){
+    private void deleteApprovedCVComments(final int position, final String cvId) {
         mReferenceComments.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange
 
-                if(dataSnapshot.hasChild(cvId)){
-                    mReferenceComments.child(cvId).removeValue();
-                }
-                else{
+                    (@NonNull DataSnapshot dataSnapshot) {
 
+                if (dataSnapshot.hasChild(cvId)) {
+
+
+                    mReferenceComments.child(cvId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            mReferenceApproved.child(approvedCVList.get(position).getCvId()).removeValue();
+
+                        }
+                    });
+                } else {
+
+                    mReferenceApproved.child(approvedCVList.get(position).getCvId()).removeValue();
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -451,16 +458,32 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
     }
 
     private void viewApprovedCV(int position){
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(approvedCVList.get(position).getCvUrl()));
-        startActivity(intent);
+
+        if(isValid(approvedCVList.get(position).getCvUrl())){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(approvedCVList.get(position).getCvUrl()));
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(getContext(), "Not valid Url.", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private static boolean isValid(String url){
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.action_search){
+        if (id == R.id.action_search) {
             //TODO
-            System.out.println("hello world");
             return true;
         }
 
@@ -469,22 +492,59 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.home, menu) ;
+        inflater.inflate(R.menu.home, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //firebaseSearch(query);
+                search(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 //firebaseSearch(newText);
+                search(newText);
                 return false;
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+    private void search(String text) {
+        final String s =text.toLowerCase();
+
+        mReferenceApproved.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                approvedCVList.clear();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    if (dataSnapshot1.child("cvSkills").getValue().toString().toLowerCase().contains(s) || (dataSnapshot1.child("cvTitle").getValue().toString().toLowerCase().contains(s))) {
+                        ApprovedCV approvedCV;
+                        approvedCV = new ApprovedCV(dataSnapshot1.getKey(),
+                                dataSnapshot1.child("cvTitle").getValue(String.class),
+                                dataSnapshot1.child("cvSkills").getValue(String.class),
+                                dataSnapshot1.child("cvEmail").getValue(String.class),
+                                dataSnapshot1.child("cvPhone").getValue(String.class),
+                                dataSnapshot1.child("cvUrl").getValue(String.class),
+                                dataSnapshot1.child("cvStarCount").getValue(String.class),
+                                dataSnapshot1.child("cvCommentCount").getValue(String.class));
+                        approvedCVList.add(approvedCV);
+                        adapterApproved.notifyDataSetChanged();
+
+
+                    }
+
+                }
+                adapterApproved.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

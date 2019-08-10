@@ -17,12 +17,12 @@
 
         <TextView
             android:id="@+id/tv_title_homeusercv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:fontFamily="@font/roboto_medium"
-            android:text="UI Designer"
+            android:text="@string/cv_title"
             android:textColor="#000000"
             android:textSize="18sp" />
 
@@ -34,21 +34,22 @@
             android:fontFamily="@font/roboto_medium"
             android:text="@string/new_cv"
             android:textAlignment="center"
-            android:textColor="@color/orange"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:id="@+id/ll_skilss_homeuser"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
@@ -68,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_italic"
                 android:gravity="left|center_vertical"
-                android:text="#illustrator#coreldraw"
+                android:text="@string/apply_cv_skills"
                 android:textColor="@color/colorTextNewCV"
                 android:textSize="16sp" />
 
@@ -100,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/roboto"
-            android:text="0"
+            android:text="@string/count"
             android:textColor="@color/colorTextNewCV"
             android:textSize="16sp" />
 
@@ -118,17 +119,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/roboto"
-            android:text="0"
+            android:text="@string/count"
             android:textColor="@color/colorTextNewCV"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/btn_view_homeuser"
-            android:layout_width="100dp"
+            android:layout_width="140dp"
             android:layout_height="40dp"
             android:background="@drawable/btn_view"
             android:fontFamily="@font/roboto_medium"
-            android:text="VIEW"
+            android:text="@string/btn_view"
             android:textAlignment="center"
             android:textColor="@color/colorWhite" />
 

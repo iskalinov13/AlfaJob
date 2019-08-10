@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_light"
-                android:text="Date"
+                android:text="@string/date_date"
                 android:textColor="@color/colorWhite"
                 android:textSize="12sp"
                 android:gravity="center"/>
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Today 10/07/2019"
+                android:text="@string/date_today"
                 android:textColor="@color/colorWhite"
                 android:textSize="14sp"
                 android:gravity="center"/>
@@ -69,70 +69,41 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
             android:gravity="center"
-            android:text="Vacancy"
+            android:text="@string/vacancy"
             android:textColor="#474747"
             android:textSize="18sp" />
 
-        <View
-            android:layout_marginTop="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="0.7dp"
-            android:background="#938B8B"/>
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto"
-            android:gravity="center"
-            android:text="Job Title"
-            android:textColor="#938B8B"
-            android:textSize="18sp" />
 
         <EditText
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:id="@+id/et_newvacancy_jobtitle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
+            android:paddingStart="10dp"
+            android:hint="@string/job_title"
             android:background="@drawable/bcg_edit_email"
             android:fontFamily="@font/roboto"
-            android:gravity="center_vertical"
-            android:padding="10dp"
             android:ems="13"
-            android:inputType="textEmailAddress"
-            android:shadowColor="#5C000000"
-            android:shadowDx="0"
-            android:shadowDy="8"
-            android:textSize="18sp" />
-
-        <TextView
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto"
-            android:gravity="center"
-            android:text="Job Description"
-            android:textColor="#938B8B"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:inputType="text"
+            android:padding="5dp"/>
 
         <EditText
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:id="@+id/et_newvacancy_jobdescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="6"
-            android:lines="6"
+            android:hint="@string/job_description"
+            android:gravity="start"
             android:layout_weight="1"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/bcg_edit_email"
             android:fontFamily="@font/roboto"
-            android:gravity="start"
-            android:padding="10dp"
-            android:shadowColor="#5C000000"
-            android:shadowDx="0"
-            android:shadowDy="8"
-            android:textSize="18sp" />
+            android:ems="13"
+            android:textSize="18sp"
+            android:layout_marginBottom="10dp"
+            android:padding="5dp"
+            android:inputType="textMultiLine"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -148,7 +119,7 @@
                 android:textAlignment="center"
                 android:background="@drawable/btn_view"
                 android:fontFamily="@font/roboto_medium"
-                android:text="CREATE"
+                android:text="@string/btn_save"
                 android:textColor="@color/colorWhite" />
 
             <Button
@@ -159,7 +130,7 @@
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/btn_apply"
                 android:fontFamily="@font/roboto_medium"
-                android:text="CANCEL"
+                android:text="@string/btn_cancel"
                 android:textColor="@color/colorWhite" />
         </LinearLayout>
 

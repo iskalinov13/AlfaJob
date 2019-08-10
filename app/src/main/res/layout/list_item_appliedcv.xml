@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/roboto_medium"
-            android:text="UI Designer"
+            android:text="@string/cv_title"
             android:textColor="#000000"
             android:textSize="18sp"
             android:layout_gravity="center_vertical"/>
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_italic"
                 android:gravity="left|center_vertical"
-                android:text="#illustrator#coreldraw"
+                android:text="@string/apply_cv_skills"
                 android:textColor="@color/colorTextNewCV"
                 android:textSize="16sp" />
 
@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
-            android:text="message"
+            android:text="@string/message_gmail"
             android:textColor="@color/colorTextNewCV"
             android:textSize="16sp"
             android:layout_weight="1"
@@ -119,7 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
-            android:text="Call"
+            android:text="@string/call"
             android:textColor="@color/colorTextNewCV"
             android:textSize="16sp"
             android:layout_weight="1"
@@ -149,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
-            android:text="0"
+            android:text="@string/count"
             android:textColor="@color/colorTextNewCV"
             android:textSize="16sp"
             android:layout_weight="1"
@@ -168,7 +168,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
-            android:text="0"
+            android:text="@string/count"
             android:textColor="@color/colorTextNewCV"
             android:textSize="16sp"
             android:layout_weight="1"
@@ -176,12 +176,12 @@
 
         <Button
             android:id="@+id/btn_view_appliedcv"
-            android:layout_width="100dp"
+            android:layout_width="140dp"
             android:layout_height="40dp"
             android:textAlignment="center"
             android:background="@drawable/btn_view"
             android:fontFamily="@font/roboto_medium"
-            android:text="VIEW"
+            android:text="@string/btn_view"
             android:textColor="@color/colorWhite" />
 
     </LinearLayout>

@@ -17,12 +17,16 @@
         android:background="@color/colorWhite"
         android:fontFamily="@font/roboto_italic"
         android:gravity="center_vertical"
-        android:hint="@string/apply_cv_title"
+        android:hint="@string/title"
         android:paddingLeft="10dp"
         android:shadowColor="#5C000000"
         android:shadowDx="0"
         android:shadowDy="8"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:inputType="text"
+        android:maxLength="20"/>
 
     <EditText
         android:id="@+id/et_applycv_skills"
@@ -38,7 +42,11 @@
         android:shadowColor="#5C000000"
         android:shadowDx="0"
         android:shadowDy="8"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:inputType="text"
+        android:maxLength="20"/>
 
     <EditText
         android:id="@+id/et_applycv_phone"
@@ -49,12 +57,16 @@
         android:background="@color/colorWhite"
         android:fontFamily="@font/roboto_italic"
         android:gravity="center_vertical"
-        android:hint="@string/apply_cv_phone"
+        android:hint="@string/phone"
         android:paddingLeft="10dp"
         android:shadowColor="#5C000000"
         android:shadowDx="0"
         android:shadowDy="8"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:inputType="text"
+        android:maxLength="20"/>
 
     <LinearLayout
         android:id="@+id/ll_applycv_main"
@@ -70,31 +82,26 @@
         <EditText
             android:id="@+id/et_applycv_addcomment"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:background="@color/colorWhite"
+            android:background="@drawable/bcg_edit_email"
             android:fontFamily="@font/roboto_italic"
-            android:gravity="center_vertical"
-            android:hint="@string/apply_cv_addcomment"
-            android:paddingLeft="10dp"
+            android:hint="@string/add_comment"
+            android:padding="10dp"
             android:shadowColor="#5C000000"
+            android:gravity="top"
             android:shadowDx="0"
             android:shadowDy="8"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/et_applycv_search"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:drawableLeft="@android:drawable/ic_menu_search"
-            android:drawableStart="@android:drawable/ic_menu_search"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/bcg_edit_email"
-            android:ems="10"
+            android:textSize="18sp"
+            android:imeOptions="actionDone"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:lines="5"
+            android:scrollHorizontally="false"
             android:inputType="text"
-            android:padding="5dp"
-            android:gravity="center_vertical"
-            tools:ignore="Autofill" />
+            android:maxLength="200"/>
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -110,7 +117,7 @@
                 android:enabled="false"
                 android:fontFamily="@font/roboto_medium"
                 android:shadowColor="#222325"
-                android:text="Choose"
+                android:text="@string/btn_choose"
                 android:textColor="@color/grey"
                 android:textAlignment="center" />
 
@@ -123,11 +130,10 @@
                 android:textAlignment="center"
                 android:background="@drawable/btn_send"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Send All"
+                android:text="@string/btn_send_all"
                 android:textColor="@color/grey"
                 android:enabled="false"/>
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/ll_applycv_invisible"

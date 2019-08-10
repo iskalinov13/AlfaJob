@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.ApprovedCV;
 
+import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,7 +66,9 @@ public class RVAdapterApprovedCV  extends RecyclerView.Adapter<RVAdapterApproved
         holder.tv_skills.setText(approvedCV.getCvSkills());
         holder.tv_star_count.setText(approvedCV.getCvStarCount());
         holder.tv_comment_count.setText(approvedCV.getCvCommentCount());
+        holder.iv_delete.setVisibility(View.INVISIBLE);
         holder.setStarBtn(approvedCV.getCvId());
+        holder.setDeleteBtn(firebaseUser.getUid());
 
     }
 
@@ -120,6 +123,28 @@ public class RVAdapterApprovedCV  extends RecyclerView.Adapter<RVAdapterApproved
                     }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
+
+        public void setDeleteBtn(final String uId){
+            mReferenceUsers.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot snap: dataSnapshot.getChildren()){
+                        User user = snap.getValue(User.class);
+                        if(user.getUserEmail().equals("recruiteralfabank@gmail.com")){
+                            if(user.getUserId().equals(uId)){
+                                iv_delete.setVisibility(View.VISIBLE);
+
+                            }
+                        }
+
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 }
             });
         }

@@ -122,7 +122,7 @@ public class FragmentHomeUser extends Fragment {
     }
 
     private void search(String text){
-        final String s =text;
+        final String s =text.toLowerCase();
         mDatabaseAppliedcv.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -163,9 +163,10 @@ public class FragmentHomeUser extends Fragment {
 
                         }
                     }
-                    pd.dismiss();
 
                 }
+                recyclerViewAdapter = new RVAdapterHomeUser(getContext(),listAppliedCV);
+                myrecyclerView.setAdapter(recyclerViewAdapter);
             }
 
             @Override
@@ -195,8 +196,6 @@ public class FragmentHomeUser extends Fragment {
             }
         });
     }
-
-
 
 
     private void retrieveData(){

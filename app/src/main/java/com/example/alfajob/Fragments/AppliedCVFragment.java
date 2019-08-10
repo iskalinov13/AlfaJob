@@ -143,8 +143,7 @@ public class AppliedCVFragment extends Fragment {
     }
 
     private void search(String text){
-        final String s =text;
-
+        final String s =text.toLowerCase();
         mDatabaseAppliedcv.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -167,9 +166,10 @@ public class AppliedCVFragment extends Fragment {
                         myrecyclerView.setAdapter(recyclerViewAdapter);
 
                     }
-                    pd.dismiss();
 
                 }
+                recyclerViewAdapter = new RVAdapterAppliedCV(getContext(),listAppliedCV);
+                myrecyclerView.setAdapter(recyclerViewAdapter);
             }
 
             @Override

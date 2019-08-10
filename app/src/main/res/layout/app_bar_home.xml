@@ -36,6 +36,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:backgroundTint="@color/colorFloatButton"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+        app:srcCompat="@drawable/ic_add_black_24dp"
+        app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

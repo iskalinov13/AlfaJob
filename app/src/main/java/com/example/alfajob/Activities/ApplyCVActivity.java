@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.alfajob.Adapter.RVAdapterSendToUser;
@@ -50,8 +51,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,7 +70,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     FirebaseAuth mAuth;
 
     public EditText et_cvTitle, et_cvSkills, et_cvPhone;
-    public EditText et_addComment, et_search;
+    public EditText et_addComment;
     public Button btn_sendAll, btn_choose;
     public RecyclerView mRecyclerView;
     public LinearLayout ll_list_invisible;
@@ -82,7 +86,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         et_cvSkills = findViewById(R.id.et_applycv_skills);
         et_cvPhone = findViewById(R.id.et_applycv_phone);
         et_addComment = findViewById(R.id.et_applycv_addcomment);
-        et_search = findViewById(R.id.et_applycv_search);
         btn_sendAll = findViewById(R.id.btn_applycv_sendAll);
         btn_choose = findViewById(R.id.btn_applycv_choose);
         mRecyclerView = findViewById(R.id.rv_apply_send);
@@ -162,7 +165,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
             }
         });
 
-
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -180,7 +182,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
                 btn_sendAll.setEnabled(true);
                 btn_sendAll.setTextColor(getResources().getColor(R.color.colorWhite));
-
                 btn_choose.setEnabled(true);
                 btn_choose.setTextColor(getResources().getColor(R.color.colorWhite));
 
@@ -191,11 +192,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                 btn_sendAll.setTextColor(getResources().getColor(R.color.grey));
                 btn_choose.setEnabled(false);
                 btn_choose.setTextColor(getResources().getColor(R.color.grey));
-
-
             }
-
-
         }
 
         @Override
@@ -222,7 +219,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     }
 
     public void sendCVToAllUsers(final String cvId){
-
+        btn_sendAll.setActivated(true);
         setAppliedCV();
         mDatabaseUsers.addValueEventListener(new ValueEventListener() {
             @Override
@@ -278,7 +275,13 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comments").child(cvId);
         String commentId = reference.push().getKey();
         String userID = firebaseUser.getUid();
-        Comment c = new Comment(commentId, comment, userID);
+        String pattern = " dd, yyyy 'at' HH:mm:ss";
+        Calendar calendar = Calendar.getInstance();
+        String month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String date = month + simpleDateFormat.format(new Date());
+        Comment c = new Comment(commentId, comment, userID, date);
         reference.child(commentId).setValue(c);
     }
 
@@ -287,7 +290,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
             addComment(et_addComment.getText().toString().trim());
             et_addComment.setText("");
         }
-
 
         DatabaseReference rootAppliedcv = mDatabaseAppliedcv.child(cvId);
         rootAppliedcv.child("cvTitle").setValue(cvTitle);
@@ -301,7 +303,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     }
 
     public void sendCVToUser(final String userId) {
-
+        btn_choose.setActivated(true);
         setAppliedCV();
         sendNotification(firebaseUser.getUid(), userId, cvSkills, cvTitle);
         mDatabaseSendToUsers
@@ -352,25 +354,30 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                mDatabaseNewcv.child(cvId).removeValue()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d("Success", "DocumentSnapshot successfully deleted!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("Fail", "Error deleting document", e);
-                            }
-                        });
+                if(btn_choose.isActivated() || btn_sendAll.isActivated()){
+                    mDatabaseNewcv.child(cvId).removeValue()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.d("Success", "DocumentSnapshot successfully deleted!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("Fail", "Error deleting document", e);
+                                }
+                            });
 
-                dialog.dismiss();
-                setResult(Activity.RESULT_OK);
-                finish();
-
-
+                    dialog.dismiss();
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
+                else{
+                    dialog.dismiss();
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
 
             }
 
@@ -409,7 +416,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Token token = snapshot.getValue(Token.class);
-                    Data data = new Data(firebaseUser.getUid(), R.drawable.ic_stat_name,cvSkills, cvTitle,receiver);
+                    Data data = new Data(firebaseUser.getUid(), R.drawable.ic_logo_alfabank3,cvSkills, cvTitle,receiver);
                     Sender sender = new Sender(data, token.getToken());
 
                     apiService.sendNotification(sender)

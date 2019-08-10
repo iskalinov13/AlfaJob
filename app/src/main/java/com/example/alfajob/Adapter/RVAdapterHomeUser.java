@@ -3,26 +3,21 @@ package com.example.alfajob.Adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alfajob.Activities.CommentActivity;
-import com.example.alfajob.Activities.HomeActivity;
 import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.AppliedCV;
 import com.example.alfajob.Objects.User;
@@ -36,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,11 +82,17 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
         viewHolder.btn_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isValid(mData.get(viewHolder.getAdapterPosition()).getCvUrl())){
+                    System.out.println(mData.get(viewHolder.getAdapterPosition()).getCvUrl());
 
-                mDatabaseSendToUsers.child(mData.get(viewHolder.getAdapterPosition()).getId()).child(mAuth.getCurrentUser().getUid()).setValue(true);
-                notifyItemChanged(viewHolder.getAdapterPosition());
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mData.get(viewHolder.getAdapterPosition()).getCvUrl()));
-                mContext.startActivity(intent);
+                    mDatabaseSendToUsers.child(mData.get(viewHolder.getAdapterPosition()).getId()).child(mAuth.getCurrentUser().getUid()).setValue(true);
+                    notifyItemChanged(viewHolder.getAdapterPosition());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mData.get(viewHolder.getAdapterPosition()).getCvUrl()));
+                    mContext.startActivity(intent);
+                }
+                else{
+                    Toast.makeText(mContext, "Not valid url.", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -162,6 +164,15 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
 
     }
 
+    private static boolean isValid(String url){
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
 
     private void seeStars(int position){
 
@@ -234,14 +245,13 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
-        System.out.println(mData.size()+ "SIZE");
-        holder.tv_title.setText(mData.get(i).getCvTitle()+"POSITION"+i);
+        System.out.println(mData.size());
+        holder.tv_title.setText(mData.get(i).getCvTitle());
         holder.tv_skills.setText(mData.get(i).getCvSkills());
         holder.tv_star_count.setText(mData.get(i).getStarCount());
         holder.tv_comment_count.setText(mData.get(i).getCommentCount());
         holder.tv_notification.setText(mData.get(i).getCvStatus());
         holder.setStarBtn(mData.get(i).getId());
-        //holder.setNotification(mAuth.getCurrentUser().getUid(),mData.get(i).getId(),mContext);
     }
 
     @Override

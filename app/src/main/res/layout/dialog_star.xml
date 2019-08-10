@@ -7,7 +7,7 @@
     android:layout_centerVertical="true"
     android:padding="10dp">
     <LinearLayout
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -20,11 +20,11 @@
             android:background="@color/colorPrimary">
 
             <TextView
-                android:layout_marginTop="5dp"
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Stars"
+                android:text="@string/stars"
                 android:textColor="@color/colorWhite"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -52,7 +52,7 @@
             android:layout_height="40dp"
             android:background="@drawable/btn_view"
             android:fontFamily="@font/roboto_medium"
-            android:text="OK"
+            android:text="@string/ok"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="14sp"
@@ -60,28 +60,12 @@
 
     </LinearLayout>
 
-<ImageView
-    android:id="@+id/star_1"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:src="@drawable/ic_star_clciked_24px"
-    android:layout_alignParentTop="true"
-    android:layout_centerHorizontal="true"/>
-
-    <ImageView
-    android:id="@+id/star_2"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:src="@drawable/ic_star_clciked_24px"
-    android:layout_alignParentTop="true"
-    android:layout_toEndOf="@id/star_1" />
     <ImageView
         android:id="@+id/star_3"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_star_clciked_24px"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@id/star_1" />
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/tv_star_no_data"
@@ -90,7 +74,7 @@
         android:layout_centerInParent="true"
         android:fontFamily="@font/roboto"
         android:gravity="center"
-        android:text="Нет данных"
+        android:text="@string/no_data_found"
         android:textColor="@color/colorTextPrimary"
         android:textSize="18sp"
         android:visibility="invisible"/>

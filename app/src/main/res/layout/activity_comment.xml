@@ -1,45 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.CommentActivity">
+    android:orientation="vertical"
+    tools:context=".Activities.CommentActivity"
+    android:background="@color/colorWhite">
     
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rv_comment">
+        android:id="@+id/rv_comment"
+        android:layout_weight="1">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <RelativeLayout
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorTextPrimary"
+        />
+
+    <LinearLayout
+        android:gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rl_bottom_comment"
-        android:padding="4dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/bcg_add_comment">
-        
+        android:background="@color/colorWhite"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:layout_alignParentBottom="true">
+
         <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_centerVertical="true"
+            android:layout_below="@id/view_line"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/civ_profile_comment"
-            android:src="@drawable/profile"/>
+            android:src="@drawable/profile"
+            android:layout_gravity="center"/>
 
         <EditText
+            android:padding="10dp"
+            android:layout_below="@id/view_line"
             android:id="@+id/et_addcomment_comment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="80dp"
+            android:gravity="top"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_toLeftOf="@+id/tv_post_comment"
             android:layout_toRightOf="@+id/civ_profile_comment"
-            android:background="@android:color/transparent"
-            android:fontFamily="@font/roboto_italic"
-            android:hint="Add a comment"
-            android:textSize="16sp" />
+            android:fontFamily="@font/roboto"
+            android:hint="@string/add_comment"
+            android:textSize="16sp"
+            android:imeOptions="actionGo"/>
 
         <TextView
             android:id="@+id/tv_post_comment"
@@ -49,10 +67,11 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
             android:fontFamily="@font/roboto_medium"
-            android:text="Post"
+            android:text="@string/post"
+            android:layout_gravity="center"
             android:textColor="#3993FD"
             android:textSize="16sp" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

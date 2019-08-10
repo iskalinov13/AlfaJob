@@ -3,9 +3,8 @@
     android:id="@+id/tv_date_comment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bcg_add_comment"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civ_profile_image_comment"
@@ -17,7 +16,7 @@
         android:id="@+id/ll_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/civ_profile_image_comment"
         android:orientation="vertical">
 
@@ -30,29 +29,37 @@
             android:textColor="@android:color/background_dark"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/tv_comment_date_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:fontFamily="@font/roboto"
+            android:text="@string/date"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/tv_comment_comment"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
             android:maxLines="5"
-            android:text="Username"
+            android:text="@string/lorem_ipsum"
             android:textColor="@android:color/background_dark"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/tv_comment_"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:fontFamily="@font/roboto"
-            android:text="31/07/2019"
-            android:textColor="@color/colorTextPrimary"
-            android:textSize="14sp" />
-
-
     </LinearLayout>
+    <View
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/ll_comment"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorTextPrimary"
+        />
+
 
 
 </RelativeLayout>

@@ -47,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,9 +95,13 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         viewHolder.btn_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mData.get(viewHolder.getAdapterPosition()).getCvUrl()));
-                mContext.startActivity(intent);
+                if(isValid(mData.get(viewHolder.getAdapterPosition()).getCvUrl())){
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mData.get(viewHolder.getAdapterPosition()).getCvUrl()));
+                    mContext.startActivity(intent);
+                }
+                else{
+                    Toast.makeText(mContext, "Not valid url.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -450,6 +455,16 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
         else{
 
             Toast.makeText(mContext, "Empty phone", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private static boolean isValid(String url){
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+        catch (Exception e) {
+            return false;
         }
     }
 

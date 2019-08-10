@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/roboto_medium"
-                android:text="NEW"
+                android:text="@string/tab_new"
                 android:textColor="@color/grey"
                 android:textSize="18sp" />
             <View
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/roboto_medium"
-                android:text="APPLIED"
+                android:text="@string/tab_applied"
                 android:textColor="@color/grey"
                 android:textSize="18sp" />
             <View

@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Approve"
+                android:text="@string/approve"
                 android:textColor="@color/colorWhite"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto"
-            android:text="@string/approve_dialog"
+            android:text="@string/approve_question"
             android:textColor="#181717"
             android:textSize="18sp"
             android:layout_gravity="center"/>
@@ -56,7 +56,7 @@
                 android:textAlignment="center"
                 android:background="@drawable/btn_view"
                 android:fontFamily="@font/roboto_medium"
-                android:text="@string/yes"
+                android:text="@string/btn_yes"
                 android:textColor="@color/colorWhite" />
 
             <Button
@@ -67,7 +67,7 @@
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/btn_apply"
                 android:fontFamily="@font/roboto_medium"
-                android:text="@string/no"
+                android:text="@string/btn_no"
                 android:textColor="@color/colorWhite" />
         </LinearLayout>
 

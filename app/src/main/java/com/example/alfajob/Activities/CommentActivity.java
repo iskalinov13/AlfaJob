@@ -28,9 +28,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -147,12 +151,19 @@ public class CommentActivity extends AppCompatActivity {
 
         mDatabaseComments = FirebaseDatabase.getInstance().getReference("comments").child(cvId);
         String commentId = mDatabaseComments.push().getKey();
-        String comment = et_addComment.getText().toString();
+        String comment = et_addComment.getText().toString().trim();
         String userId = firebaseUser.getUid();
 
-        Comment c = new Comment(commentId, comment, userId);
+        String pattern = " dd, yyyy 'at' HH:mm:ss";
+        Calendar calendar = Calendar.getInstance();
+        String month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String date = month+ simpleDateFormat.format(new Date());
+        Comment c = new Comment(commentId, comment, userId, date);
         mDatabaseComments.child(commentId).setValue(c);
         et_addComment.setText("");
+        System.out.println(date);
 
         mDatabaseComments.addValueEventListener(new ValueEventListener() {
             @Override

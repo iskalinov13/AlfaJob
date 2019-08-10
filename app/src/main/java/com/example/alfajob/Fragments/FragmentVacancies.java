@@ -1,6 +1,8 @@
 package com.example.alfajob.Fragments;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -22,6 +24,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.alfajob.Activities.ApplyCVActivity;
+import com.example.alfajob.Activities.NewVacancyActivity;
 import com.example.alfajob.Adapter.RVAdapterVacancy;
 import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.Vacancy;
@@ -78,6 +82,7 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
 
         initializeData();
         checkIfempty();
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -190,31 +195,51 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
 
     private void viewVacancy(int position){
         //DIALOG
-        dialogView = new Dialog(getContext());
-        dialogView.setContentView(R.layout.dialog_vacancy);
-        if(dialogView.getWindow() != null){
-            dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+//        dialogView = new Dialog(getContext());
+//        dialogView.setContentView(R.layout.dialog_vacancy);
+//
+//        if(dialogView.getWindow() != null){
+//            dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        }
+//
+        Intent intent = new Intent(getContext(), NewVacancyActivity.class);
 
+        String strVacancyId = vacancyList.get(position).getVacancyId();
+        String strUserId = vacancyList.get(position).getUserId();
+        String strVacancyTitle = vacancyList.get(position).getVacancyTitle();
+        String strVacancyDescription = vacancyList.get(position).getVacancyDescription();
+        String strVacancyDate = vacancyList.get(position).getVacancyDate();
+        String userName = vacancyList.get(position).getUserName();
+        String photoUrl = vacancyList.get(position).getImgUrl();
 
-        TextView tv_titlle = dialogView.findViewById(R.id.tv_title_dialog);
-        TextView tv_date = dialogView.findViewById(R.id.tv_date_dialog);
-        TextView tv_description = dialogView.findViewById(R.id.tv_dialog_description);
+        intent.putExtra("VACANCY ID", strVacancyId);
+        intent.putExtra("USER ID", strUserId);
+        intent.putExtra("VACANCY TITLE", strVacancyTitle);
+        intent.putExtra("VACANCY DESCRIPTION", strVacancyDescription);
+        intent.putExtra("VACANCY DATE", strVacancyDate);
+        intent.putExtra("USER NAME",userName);
+        intent.putExtra("PHOTO URL", photoUrl);
 
-        Button btn_publish = dialogView.findViewById(R.id.btn_publish_dialog);
-        Button btn_cancel = dialogView.findViewById(R.id.btn_cancel_dialog);
+        startActivity(intent);
 
-        tv_titlle.setText(vacancyList.get(position).getVacancyTitle());
-        tv_date.setText(vacancyList.get(position).getVacancyDate());
-        tv_description.setText(vacancyList.get(position).getVacancyDescription());
-        dialogView.show();
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogView.dismiss();
-            }
-        });
+//        TextView tv_titlle = dialogView.findViewById(R.id.tv_title_dialog);
+//        TextView tv_date = dialogView.findViewById(R.id.tv_date_dialog);
+//        TextView tv_description = dialogView.findViewById(R.id.tv_dialog_description);
+//
+//        Button btn_publish = dialogView.findViewById(R.id.btn_publish_dialog);
+//        Button btn_cancel = dialogView.findViewById(R.id.btn_cancel_dialog);
+//
+//        tv_titlle.setText(vacancyList.get(position).getVacancyTitle());
+//        tv_date.setText(vacancyList.get(position).getVacancyDate());
+//        tv_description.setText(vacancyList.get(position).getVacancyDescription());
+//        dialogView.show();
+//
+//        btn_cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialogView.dismiss();
+//            }
+//        });
 
     }
 
@@ -233,20 +258,55 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.home, menu) ;
         MenuItem item = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //firebaseSearch(query);
+                search(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //firebaseSearch(newText);
+                search(newText);
                 return false;
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void search(String text) {
+        final String s =text.toLowerCase();
+
+        mReferenceVacancy.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                vacancyList.clear();
+                for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
+                    if (dataSnapshot2.getKey().equals(firebaseUser.getUid())) {
+                        for(DataSnapshot dataSnapshot1: dataSnapshot2.getChildren()) {
+                            if (dataSnapshot1.child("vacancyTitle").getValue().toString().toLowerCase().contains(s) || (dataSnapshot1.child("vacancyDescription").getValue().toString().toLowerCase().contains(s))) {
+                                Vacancy vacancy;
+                                vacancy = new Vacancy(dataSnapshot1.child("userId").getValue(String.class),
+                                        dataSnapshot1.child("userName").getValue(String.class),
+                                        dataSnapshot1.child("imgUrl").getValue(String.class),
+                                        dataSnapshot1.child("vacancyTitle").getValue(String.class),
+                                        dataSnapshot1.child("vacancyDescription").getValue(String.class),
+                                        dataSnapshot1.child("vacancyDate").getValue(String.class),
+                                        dataSnapshot1.child("vacancyId").getValue(String.class));
+                                vacancyList.add(vacancy);
+                                adapterVacancy.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+                adapterVacancy.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

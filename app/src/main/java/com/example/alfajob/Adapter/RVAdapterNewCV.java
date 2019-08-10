@@ -91,15 +91,13 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
               @Override
               public void onClick(View v) {
                   AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                  builder.setTitle("Delete");
-                  builder.setMessage("Are you sure to delete this cv?");
-                  builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                  builder.setTitle("Удалить");
+                  builder.setMessage("Вы уверены, что хотите удалить это резюме?");
+                  builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
                       @Override
                       public void onClick(DialogInterface dialog, int which) {
 
                           final int position = viewHolder.getAdapterPosition();
-                          System.out.println(position+"amdat"+mData.size());
-
                           mDatabaseNewcv.child(mData.get(position).getId()).removeValue()
                                   .addOnCompleteListener(new OnCompleteListener<Void>() {
                                       @Override
@@ -117,7 +115,7 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
                       }
                   });
 
-                  builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                  builder.setNegativeButton("Да", new DialogInterface.OnClickListener() {
                       @Override
                       public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -146,16 +144,16 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
               @Override
               public void onClick(View v) {
                   AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                  builder.setTitle("Call");
-                  builder.setMessage("Do you want to call to him/her ?");
-                  builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                  builder.setTitle("Вызов");
+                  builder.setMessage("Вы хотите позвонить ему / ей?");
+                  builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
                       @Override
                       public void onClick(DialogInterface dialog, int which) {
                           phoneNumber = mData.get(viewHolder.getAdapterPosition()).getUserPhone();
                           makePhoneCall(phoneNumber);
                       }
                   });
-                  builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                  builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
                       @Override
                       public void onClick(DialogInterface dialog, int which) {
                           dialog.dismiss();
@@ -168,7 +166,6 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
         return viewHolder;
 
     }
-
 
     private void makePhoneCall(String phonenumber){
         String phoneN = phonenumber;
@@ -190,7 +187,7 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
         }
         else{
 
-            Toast.makeText(mContext, "Empty phone", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Номер телефона не должны быть пустымию", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -202,7 +199,7 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
                 phoneNumber = "";
             }
             else{
-                Toast.makeText(mContext, "Permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Доступ запрещен", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -250,6 +247,7 @@ public class RVAdapterNewCV extends RecyclerView.Adapter<RVAdapterNewCV.MyViewHo
 
         }
     }
+
 
 
 

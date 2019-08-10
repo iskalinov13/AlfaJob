@@ -1,6 +1,5 @@
 package com.example.alfajob.Fragments;
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,14 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.baoyz.widget.PullRefreshLayout;
 import com.example.alfajob.Adapter.RVAdapterNewCV;
 import com.example.alfajob.Interface.JsonPlaceHolderApi;
@@ -29,10 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -85,7 +80,7 @@ public class NewCVFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mDatabaseNewcv = FirebaseDatabase.getInstance().getReference("newcv");
         pd = new ProgressDialog(getContext());
-        pd.setTitle("Loading ...");
+        pd.setTitle("Загрузка ...");
         pd.show();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://script.google.com/macros/s/AKfycbxQPoyJydCAZZLnx0X2l4X2HSdxV0VylNwqkgww6v7Qu3_TX66f/")

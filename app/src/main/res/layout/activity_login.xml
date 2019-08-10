@@ -7,7 +7,6 @@
     tools:context=".Activities.LoginActivity">
 
     <ImageView
-        android:id="@+id/imageView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
@@ -47,13 +46,11 @@
         app:layout_constraintTop_toBottomOf="@+id/title">
 
         <LinearLayout
-            android:id="@+id/linearLayout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -81,14 +78,12 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"

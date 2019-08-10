@@ -520,19 +520,19 @@ public class RVAdapterAppliedCV extends RecyclerView.Adapter<RVAdapterAppliedCV.
             mAuth = FirebaseAuth.getInstance();
             mDatabaseStars = FirebaseDatabase.getInstance().getReference().child("Stars");
 
-            tv_title = (TextView)itemView.findViewById(R.id.tv_title_appliedcv);
-            tv_skills = (TextView)itemView.findViewById(R.id.tv_skills_appliedcv);
-            tv_email = (TextView)itemView.findViewById(R.id.tv_email_appliedcv);
-            tv_phone = (TextView)itemView.findViewById(R.id.tv_phone_appliedcv);
-            tv_star_count = (TextView)itemView.findViewById(R.id.tv_starcount_appliedcv);
-            tv_comment_count = (TextView)itemView.findViewById(R.id.tv_commentcount_appliedcv);
-            iv_email = (ImageView)itemView.findViewById(R.id.iv_email_appliedcv);
-            iv_phone = (ImageView)itemView.findViewById(R.id.iv_phone_appliedcv);
-            iv_star = (ImageView)itemView.findViewById(R.id.iv_star_appliedcv);
-            iv_comment = (ImageView)itemView.findViewById(R.id.iv_comment_appliedcv);
-            iv_delete = (ImageView)itemView.findViewById(R.id.iv_delete_appliedcv);
+            tv_title = itemView.findViewById(R.id.tv_title_appliedcv);
+            tv_skills = itemView.findViewById(R.id.tv_skills_appliedcv);
+            tv_email = itemView.findViewById(R.id.tv_email_appliedcv);
+            tv_phone = itemView.findViewById(R.id.tv_phone_appliedcv);
+            tv_star_count = itemView.findViewById(R.id.tv_starcount_appliedcv);
+            tv_comment_count = itemView.findViewById(R.id.tv_commentcount_appliedcv);
+            iv_email = itemView.findViewById(R.id.iv_email_appliedcv);
+            iv_phone = itemView.findViewById(R.id.iv_phone_appliedcv);
+            iv_star = itemView.findViewById(R.id.iv_star_appliedcv);
+            iv_comment = itemView.findViewById(R.id.iv_comment_appliedcv);
+            iv_delete = itemView.findViewById(R.id.iv_delete_appliedcv);
             iv_approve = itemView.findViewById(R.id.iv_approve_appliedcv);
-            btn_view = (Button)itemView.findViewById(R.id.btn_view_appliedcv);
+            btn_view = itemView.findViewById(R.id.btn_view_appliedcv);
 
         }
 

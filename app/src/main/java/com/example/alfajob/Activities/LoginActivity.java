@@ -14,13 +14,16 @@ import android.widget.Toast;
 
 import com.example.alfajob.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     private EditText editEmail, editPassword;
     private Button btnLogIn;
@@ -33,10 +36,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mAuth = FirebaseAuth.getInstance();
 
-        editEmail = (EditText) findViewById(R.id.login_editText_email);
-        editPassword = (EditText) findViewById(R.id.login_editText_password);
-        btnLogIn = (Button) findViewById(R.id.login_button_login);
-        textViewSignUp = (TextView) findViewById(R.id.login_textView_register);
+        editEmail = findViewById(R.id.login_editText_email);
+        editPassword = findViewById(R.id.login_editText_password);
+        btnLogIn = findViewById(R.id.login_button_login);
+        textViewSignUp = findViewById(R.id.login_textView_register);
 
         btnLogIn.setOnClickListener(this);
         textViewSignUp.setOnClickListener(this);
@@ -47,7 +50,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null&& currentUser.isEmailVerified()) {
             sendToHomeActivity();
         }
@@ -75,26 +77,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     sendToHomeActivity();
 
                                 } else {
-                                    Toast.makeText(LoginActivity.this, "Authentication failed."  , Toast.LENGTH_LONG).show();
+                                    Toast.makeText(LoginActivity.this, "Ошибка аутентификации."  , Toast.LENGTH_LONG).show();
                                 }
                             }
                             else{
-                                Toast.makeText(LoginActivity.this, "Verify your email or you haven't yet registered" , Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Подтвердите адрес электронной почты или вы еще не зарегистрировались" , Toast.LENGTH_LONG).show();
                             }
                         }
                         else{
-                            Toast.makeText(LoginActivity.this, "You haven't yet registered" , Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "Вы еще не зарегистрированы" , Toast.LENGTH_LONG).show();
                         }
-
                     }
                 });
             }
             else {
-                Toast.makeText(this, "Empty email and password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Адрес электронной почты/пароль не должны быть пустыми.", Toast.LENGTH_SHORT).show();
             }
         }
         else if(v==textViewSignUp){
-
             startActivity(new Intent(this, RegistrationActivity.class));
             overridePendingTransition(0, 0);
         }

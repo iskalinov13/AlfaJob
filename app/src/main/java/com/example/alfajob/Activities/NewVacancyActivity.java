@@ -66,7 +66,7 @@ public class NewVacancyActivity extends AppCompatActivity {
         // Action bat style
         ActionBar bar = getSupportActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
-        bar.setTitle("Cоздать вакансию");
+        bar.setTitle("Новая вакансия");
         bar.setDisplayHomeAsUpEnabled(true);
 
         //View
@@ -146,7 +146,7 @@ public class NewVacancyActivity extends AppCompatActivity {
                     }
                 }
                 else{
-                    Toast.makeText(NewVacancyActivity.this, "Title and Description must not be empty.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewVacancyActivity.this, "Название и описание не должны быть пустыми.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -171,9 +171,9 @@ public class NewVacancyActivity extends AppCompatActivity {
     public void callBack(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(NewVacancyActivity.this);
-        builder.setTitle("Cancel");
-        builder.setMessage("Do you want to cancel?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setTitle("Отменить");
+        builder.setMessage("Вы хотите отменить?");
+        builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 et_jobDescription.setText("");
@@ -183,7 +183,7 @@ public class NewVacancyActivity extends AppCompatActivity {
             }
 
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

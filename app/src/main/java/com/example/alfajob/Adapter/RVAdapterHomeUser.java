@@ -91,7 +91,7 @@ public class RVAdapterHomeUser extends RecyclerView.Adapter<RVAdapterHomeUser.My
                     mContext.startActivity(intent);
                 }
                 else{
-                    Toast.makeText(mContext, "Not valid url.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Неверный URL.", Toast.LENGTH_SHORT).show();
                 }
 
             }

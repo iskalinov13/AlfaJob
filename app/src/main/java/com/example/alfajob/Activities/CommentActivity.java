@@ -90,7 +90,7 @@ public class CommentActivity extends AppCompatActivity {
         // Action bat style
         ActionBar bar = getSupportActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
-        bar.setTitle("Comment");
+        bar.setTitle("Комментарии");
         bar.setDisplayHomeAsUpEnabled(true);
         
         //Onclick
@@ -98,7 +98,7 @@ public class CommentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(et_addComment.getText().toString().equals("")){
-                    Toast.makeText(CommentActivity.this, "You can't send emty comment.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CommentActivity.this, "Вы не можете отправить пустой комментарий.", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     addComment(fragmentName);

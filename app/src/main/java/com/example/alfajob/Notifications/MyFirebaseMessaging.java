@@ -52,9 +52,6 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         System.out.println(user);
         int j = Integer.parseInt(user.replaceAll("[^0-9]", ""));
         Intent intent = new Intent(this, HomeActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString("userId", user);
-//        intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
 
@@ -82,9 +79,6 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         System.out.println(user);
         int j = Integer.parseInt(user.replaceAll("[^0-9]", ""));
         Intent intent = new Intent(this, HomeActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString("userId", user);
-//        intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
 

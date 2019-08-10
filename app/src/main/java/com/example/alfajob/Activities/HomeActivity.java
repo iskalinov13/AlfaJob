@@ -61,23 +61,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Home");
+        getSupportActionBar().setTitle("Главная");
+
         fab = findViewById(R.id.fab);
         final Intent intentVacancy =  new Intent(this, NewVacancyActivity.class);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 startActivity(intentVacancy);
 
             }
         });
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -93,7 +95,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = getIntent();
 
         Fragment fragment = null;
-        if(currentUser!=null){
+        if(currentUser!=null && currentUser.isEmailVerified()){
             updateToken(FirebaseInstanceId.getInstance().getToken());
             if(currentUser.getEmail().toString().equals("recruiteralfabank@gmail.com")){
                 fab.hide();

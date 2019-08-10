@@ -6,13 +6,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.alfajob.Interface.OnItemClickListener;
 import com.example.alfajob.Objects.ApprovedCV;
-
 import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,7 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.List;
 
 
@@ -31,7 +27,6 @@ public class RVAdapterApprovedCV  extends RecyclerView.Adapter<RVAdapterApproved
     private List<ApprovedCV> approvedCVList;
     private Context mContext;
     private OnItemClickListener clickListener;
-
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReferenceUsers;
     private FirebaseAuth mAuth;
@@ -62,7 +57,6 @@ public class RVAdapterApprovedCV  extends RecyclerView.Adapter<RVAdapterApproved
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         ApprovedCV approvedCV = approvedCVList.get(position);
         holder.tv_title.setText(approvedCV.getCvTitle());
-        System.out.println(approvedCV.getCvUrl()+"hello");
         holder.tv_skills.setText(approvedCV.getCvSkills());
         holder.tv_star_count.setText(approvedCV.getCvStarCount());
         holder.tv_comment_count.setText(approvedCV.getCvCommentCount());
@@ -86,9 +80,9 @@ public class RVAdapterApprovedCV  extends RecyclerView.Adapter<RVAdapterApproved
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tv_title = (TextView)itemView.findViewById(R.id.tv_title_approvedcv);
-            tv_skills = (TextView)itemView.findViewById(R.id.tv_skills_approvedcv);
-            tv_email = (TextView)itemView.findViewById(R.id.tv_email_approvedcv);
+            tv_title = itemView.findViewById(R.id.tv_title_approvedcv);
+            tv_skills = itemView.findViewById(R.id.tv_skills_approvedcv);
+            tv_email = itemView.findViewById(R.id.tv_email_approvedcv);
             tv_phone = (TextView)itemView.findViewById(R.id.tv_phone_approvedcv);
             tv_star_count = (TextView)itemView.findViewById(R.id.tv_starcount_approvedcv);
             tv_comment_count = (TextView)itemView.findViewById(R.id.tv_commentcount_approvedcv);

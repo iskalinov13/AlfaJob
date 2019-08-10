@@ -175,7 +175,7 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(getActivity() !=null){
-            getActivity().setTitle("Approve CV");
+            getActivity().setTitle("Одобрить резюме");
         }
 
     }
@@ -291,7 +291,6 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
                             starCount = starCount - 1;
                         }
                         approvedCVList.get(position).setCvStarCount(starCount+"");
-//                        notifyItemChanged(position);
                         mReferenceApproved.child(approvedCVList.get(position).getCvId()).child("cvStarCount").setValue(starCount+"");
 
                     }
@@ -301,7 +300,6 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
                         starClicked = false;
                         int starCount = Integer.parseInt(approvedCVList.get(position).getCvStarCount())+1;
                         approvedCVList.get(position).setCvStarCount(starCount+"");
-                        // notifyItemChanged(viewHolder.getAdapterPosition());
                         mReferenceApproved.child(approvedCVList.get(position).getCvId()).child("cvStarCount").setValue(starCount+"");
                     }
                 }
@@ -326,14 +324,14 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
     private void phoneCV(final int position){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Позвонить");
-        builder.setMessage("Do you want to call to him/her?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage("Вы хотите позвонить ему / ей?");
+        builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 makePhoneCall(approvedCVList.get(position).getCvUserPhone());
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -360,7 +358,7 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
         }
         else{
 
-            Toast.makeText(getContext(), "Empty phone", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Номер телефона не должны быть пустыми.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -371,7 +369,7 @@ public class ApprovedFragment extends Fragment implements OnItemClickListener, A
         emailIntent.setType("plain/text");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{approvedCVList.get(position).getCvUserEmail()});
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, approvedCVList.get(position).getCvTitle());
-        startActivity(Intent.createChooser(emailIntent, "Choose an Email Client ..."));
+        startActivity(Intent.createChooser(emailIntent, "Выберите почтовый клиент .."));
     }
 
     private void deleteApprovedCVStars(final int position, final String cvId) {

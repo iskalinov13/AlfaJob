@@ -15,7 +15,6 @@
     </com.baoyz.widget.PullRefreshLayout>
 
     <TextView
-        android:id="@+id/tv_no_data_newcv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

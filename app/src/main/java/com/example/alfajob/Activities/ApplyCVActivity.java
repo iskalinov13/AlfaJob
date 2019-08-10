@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +21,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.alfajob.Adapter.RVAdapterSendToUser;
@@ -344,9 +342,9 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     public void callBack(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ApplyCVActivity.this);
-        builder.setTitle("Exit");
-        builder.setMessage("Do you want to exit?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setTitle("Выйти");
+        builder.setMessage("Вы хотите выйти?");
+        builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -379,7 +377,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
             }
 
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

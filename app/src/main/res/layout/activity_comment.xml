@@ -26,7 +26,6 @@
         android:gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_bottom_comment"
         android:background="@color/colorWhite"
         android:orientation="horizontal"
         android:padding="5dp"

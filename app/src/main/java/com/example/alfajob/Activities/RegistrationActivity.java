@@ -100,21 +100,22 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
                                         } else {
                                             // If sign in fails, display a message to the user.
-                                            Toast.makeText(RegistrationActivity.this, "Authentication failed.",
+                                            Toast.makeText(RegistrationActivity.this, "Ошибка аутентификации",
                                                     Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
                     }
                     else{
-                        Toast.makeText(RegistrationActivity.this, "Password must be at least 6 characters",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Пароль должен содержать не менее 6 символов",Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
-                    Toast.makeText(this, "Password and confirm password mismatched", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Пароль и подтверждение пароля не совпадают", Toast.LENGTH_SHORT).show();
                 }
+
             } else {
-                Toast.makeText(this, "Username/email/password  shoud not be empty", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Имя пользователя / адрес электронной почты / пароль не должны быть пустыми", Toast.LENGTH_SHORT).show();
             }
         }
         else if(v==textLogIn){

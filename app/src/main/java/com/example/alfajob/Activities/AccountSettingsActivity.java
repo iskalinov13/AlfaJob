@@ -86,9 +86,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
                 newPassword = ev_password.getText().toString().trim();
                 newPasswordConfirmed = ev_confirm_password.getText().toString().trim();
                 if(checkUserDetails(userName, newPassword, newPasswordConfirmed)){
-                    change_password(newPassword);
-                    mAuth.signOut();
-                    sentToLoginActivity();
+                    change_password(newPassword,userName);
                 }
             }
         });
@@ -110,6 +108,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
             }
         });
+
         ImgUserPhoto = findViewById(R.id.civ_settings_imageView);
         ImgUserPhoto.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -125,7 +124,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
         });
     }
-    private void change_password(final String newPass){
+    private void change_password(final String newPass, final String userName){
         AuthCredential credential = EmailAuthProvider.getCredential(userEmail,oldPassword);
         firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -135,17 +134,20 @@ public class AccountSettingsActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(!task.isSuccessful()){
-                                Toast.makeText(AccountSettingsActivity.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AccountSettingsActivity.this, "Что-то пошло не так. Пожалуйста, попробуйте позже.", Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 mReferenceUsers.child("userPassword").setValue(newPass);
-                                Toast.makeText(AccountSettingsActivity.this, "Password Successfully Modified", Toast.LENGTH_SHORT).show();
+                                mReferenceUsers.child("userName").setValue(userName);
+                                Toast.makeText(AccountSettingsActivity.this, "Пароль успешно изменен", Toast.LENGTH_SHORT).show();
+                                mAuth.signOut();
+                                sentToLoginActivity();
                             }
                         }
                     });
                 }
                 else {
-                    Toast.makeText(AccountSettingsActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountSettingsActivity.this, "Ошибка аутентификации", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -158,7 +160,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private void checkAndRequestForPermission() {
         if (ContextCompat.checkSelfPermission(AccountSettingsActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
             if (ActivityCompat.shouldShowRequestPermissionRationale(AccountSettingsActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
-                Toast.makeText(AccountSettingsActivity.this,"Plase accept for required permission", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AccountSettingsActivity.this,"Пожалуйста, примите для получения необходимого разрешения", Toast.LENGTH_SHORT).show();
             }else{
                 ActivityCompat.requestPermissions(AccountSettingsActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         PReqCode);
@@ -202,17 +204,17 @@ public class AccountSettingsActivity extends AppCompatActivity {
                     return true;
                 }
                 else{
-                    Toast.makeText(this, "Password must be at least 6 characters",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Пароль должен содержать не менее 6 символов",Toast.LENGTH_SHORT).show();
                     return false;
                 }
             }
             else{
-                Toast.makeText(this, "Password and confirm password mismatched", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Пароль и подтверждение пароля не совпадают", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
         } else {
-            Toast.makeText(this, "Username/email/password  shoud not be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Имя пользователя / адрес электронной почты / пароль не должны быть пустыми", Toast.LENGTH_SHORT).show();
             return false;
         }
     }

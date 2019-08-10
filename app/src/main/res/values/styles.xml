@@ -53,18 +53,6 @@
 
     </style>
 
-    <style name="log_in_btn">
-
-        <item name="android:textSize">
-            24sp
-        </item>
-
-        <item name="android:textColor">
-            #F0FFFFFF
-        </item>
-
-    </style>
-
     <style name="don_t_have_">
 
         <item name="android:textSize">

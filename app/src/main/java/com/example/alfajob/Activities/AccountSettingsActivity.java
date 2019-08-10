@@ -1,5 +1,6 @@
 package com.example.alfajob.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,11 +14,29 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.alfajob.Objects.User;
 import com.example.alfajob.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -27,18 +46,70 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private CircleImageView ImgUserPhoto;
     static int PReqCode=1;
     private Uri pickedImgUri;
+    private EditText ev_userName, ev_userEmail, ev_password, ev_confirm_password;
+    private TextView tv_username;
+    private DatabaseReference mReferenceUsers;
+    private FirebaseDatabase mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseUser firebaseUser;
+    private String userName, userEmail, oldPassword, newPassword, newPasswordConfirmed;
+    private Button btn_save;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_settings);
 
+        // DB
+        mAuth = FirebaseAuth.getInstance();
+        firebaseUser = mAuth.getCurrentUser();
+        mDatabase = FirebaseDatabase.getInstance();
+        mReferenceUsers = mDatabase.getReference("users").child(firebaseUser.getUid());
+
         // Action bat style
         ActionBar bar = getSupportActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
-        bar.setTitle("Account Settings");
+        bar.setTitle("Настройки аккаунта");
         bar.setDisplayHomeAsUpEnabled(true);
 
+        tv_username = findViewById(R.id.tv_settings_name);
+        ev_userName = findViewById(R.id.et_settings_username);
+        ev_userEmail = findViewById(R.id.et_settings_email);
+        ev_userEmail.setEnabled(false);
+        ev_password = findViewById(R.id.et_settings_newpassword);
+        ev_confirm_password = findViewById(R.id.et_settings_newpassword);
+        btn_save = findViewById(R.id.btn_settings_save);
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userName = ev_userName.getText().toString().trim();
+                newPassword = ev_password.getText().toString().trim();
+                newPasswordConfirmed = ev_confirm_password.getText().toString().trim();
+                if(checkUserDetails(userName, newPassword, newPasswordConfirmed)){
+                    change_password(newPassword);
+                    mAuth.signOut();
+                    sentToLoginActivity();
+                }
+            }
+        });
+
+        // Set values
+        mReferenceUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                tv_username.setText(user.getUserName());
+                ev_userName.setText(user.getUserName());
+                ev_userEmail.setText(user.getUserEmail());
+                userEmail = user.getUserEmail();
+                oldPassword = user.getUserPassword();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         ImgUserPhoto = findViewById(R.id.civ_settings_imageView);
         ImgUserPhoto.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -52,6 +123,31 @@ public class AccountSettingsActivity extends AppCompatActivity {
                 }
             }
 
+        });
+    }
+    private void change_password(final String newPass){
+        AuthCredential credential = EmailAuthProvider.getCredential(userEmail,oldPassword);
+        firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(!task.isSuccessful()){
+                                Toast.makeText(AccountSettingsActivity.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                mReferenceUsers.child("userPassword").setValue(newPass);
+                                Toast.makeText(AccountSettingsActivity.this, "Password Successfully Modified", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+                else {
+                    Toast.makeText(AccountSettingsActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
     }
     private void openGallery() {
@@ -94,6 +190,39 @@ public class AccountSettingsActivity extends AppCompatActivity {
                 return true;
         }
         return false;
+    }
+
+    private boolean checkUserDetails(String userName, String newPassword, String newPasswordConfirmed){
+
+        if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(newPassword)&& !TextUtils.isEmpty(newPasswordConfirmed)) {
+
+            if(newPassword.equals(newPasswordConfirmed)){
+
+                if(newPassword.length()>=6){
+                    return true;
+                }
+                else{
+                    Toast.makeText(this, "Password must be at least 6 characters",Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+            else{
+                Toast.makeText(this, "Password and confirm password mismatched", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+        } else {
+            Toast.makeText(this, "Username/email/password  shoud not be empty", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    private void sentToLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(0, 0);
     }
 
 }

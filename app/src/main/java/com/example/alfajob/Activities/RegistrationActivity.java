@@ -109,13 +109,10 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     else{
                         Toast.makeText(RegistrationActivity.this, "Password must be at least 6 characters",Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
                 else{
                     Toast.makeText(this, "Password and confirm password mismatched", Toast.LENGTH_SHORT).show();
                 }
-
             } else {
                 Toast.makeText(this, "Username/email/password  shoud not be empty", Toast.LENGTH_SHORT).show();
             }
@@ -132,4 +129,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         finish();
         overridePendingTransition(0, 0);
     }
+
+
 }

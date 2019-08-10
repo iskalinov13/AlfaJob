@@ -75,8 +75,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     public RecyclerView mRecyclerView;
     public LinearLayout ll_list_invisible;
     APIService apiService;
-    boolean notify = false;
-    private int cvCommentcount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,7 +158,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                 btn_choose.setTextColor(getResources().getColor(R.color.grey));
                 btn_sendAll.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.btn_send_clicked));
                 btn_sendAll.setTextColor(Color.parseColor("#000000"));
-                btn_sendAll.setText("Sent");
+                btn_sendAll.setText("Отправлено");
                 ll_list_invisible.setVisibility(View.INVISIBLE);
                 sendCVToAllUsers(cvId);
             }
@@ -179,12 +178,10 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
             cvSkills = et_cvSkills.getText().toString().trim();
             cvPhone = et_cvPhone.getText().toString().trim();
             if(!cvTitle.isEmpty() && !cvSkills.isEmpty() && !cvPhone.isEmpty()){
-
                 btn_sendAll.setEnabled(true);
                 btn_sendAll.setTextColor(getResources().getColor(R.color.colorWhite));
                 btn_choose.setEnabled(true);
                 btn_choose.setTextColor(getResources().getColor(R.color.colorWhite));
-
             }
             else{
                 ll_list_invisible.setVisibility(View.INVISIBLE);
@@ -194,7 +191,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                 btn_choose.setTextColor(getResources().getColor(R.color.grey));
             }
         }
-
         @Override
         public void afterTextChanged(Editable s) {
 
@@ -205,13 +201,12 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     @Override
     public void onClick(View view, int position) {
         String cvUserId = listUsers.get(position).getUserId();
-        System.out.println(cvUserId+"hello!!!");
         switch(view.getId()) {
             case R.id.btn_applycv_send:
                 Button btn_send = view.findViewById(R.id.btn_applycv_send);
                 btn_send.setBackground(ContextCompat.getDrawable(this, R.drawable.btn_send_clicked));
                 btn_send.setTextColor(Color.parseColor("#000000"));
-                btn_send.setText("Sent");
+                btn_send.setText("Отправлено");
                 sendCVToUser(cvUserId);
                 break;
         }
@@ -227,11 +222,14 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
                 for(DataSnapshot childSnap: dataSnapshot.getChildren()){
                     User user = childSnap.getValue(User.class);
-                    mDatabaseSendToUsers
-                            .child(cvId)
-                            .child(user.getUserId())
-                            .setValue(false);
-                    sendNotification(firebaseUser.getUid(), user.getUserId(), cvSkills, cvTitle);
+                    if(!user.getUserEmail().equals("recruiteralfabank@gmail.com")){
+                        mDatabaseSendToUsers
+                                .child(cvId)
+                                .child(user.getUserId())
+                                .setValue(false);
+                        sendNotification(firebaseUser.getUid(), user.getUserId(), cvSkills, cvTitle);
+                    }
+
                 }
             }
 
@@ -336,7 +334,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
                     listUsers.add(user);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -347,7 +344,7 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
     public void callBack(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ApplyCVActivity.this);
-        builder.setTitle("Save");
+        builder.setTitle("Exit");
         builder.setMessage("Do you want to exit?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
@@ -435,7 +432,6 @@ public class ApplyCVActivity extends AppCompatActivity implements OnItemClickLis
 
                                 }
                             });
-
                 }
             }
 

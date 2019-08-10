@@ -125,14 +125,14 @@
                 android:id="@+id/btn_applycv_sendAll"
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="5dp"
-                android:layout_width="120dp"
+                android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:textAlignment="center"
                 android:background="@drawable/btn_send"
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/btn_send_all"
                 android:textColor="@color/grey"
-                android:enabled="false"/>
+                android:enabled="false" />
         </LinearLayout>
 
         <LinearLayout

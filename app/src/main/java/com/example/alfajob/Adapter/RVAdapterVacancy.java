@@ -11,12 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alfajob.Interface.OnItemClickListener;
+import com.example.alfajob.Objects.User;
 import com.example.alfajob.Objects.Vacancy;
 import com.example.alfajob.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -57,6 +62,7 @@ public class RVAdapterVacancy extends RecyclerView.Adapter<RVAdapterVacancy.MyVi
         holder.tv_username.setText(vacancy.getUserName());
         holder.tv_title.setText(vacancy.getVacancyTitle());
         holder.tv_date.setText(vacancy.getVacancyDate());
+        holder.setDeleteBtn(firebaseUser.getUid());
     }
 
     @Override
@@ -82,6 +88,28 @@ public class RVAdapterVacancy extends RecyclerView.Adapter<RVAdapterVacancy.MyVi
             btn_view = itemView.findViewById(R.id.btn_view_vacancy);
             btn_view.setOnClickListener(this);
             iv_delete.setOnClickListener(this);
+        }
+
+        public void setDeleteBtn(final String uId){
+            mReferenceUsers.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot snap: dataSnapshot.getChildren()){
+                        User user = snap.getValue(User.class);
+                        if(user.getUserEmail().equals("recruiteralfabank@gmail.com")){
+                            if(user.getUserId().equals(uId)){
+                                iv_delete.setVisibility(View.INVISIBLE);
+
+                            }
+                        }
+
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
         @Override
         public void onClick(View view) {

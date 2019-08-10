@@ -66,7 +66,7 @@ public class NewVacancyActivity extends AppCompatActivity {
         // Action bat style
         ActionBar bar = getSupportActionBar();
         bar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorActionBar)));
-        bar.setTitle("New Vacancy");
+        bar.setTitle("Cоздать вакансию");
         bar.setDisplayHomeAsUpEnabled(true);
 
         //View
@@ -139,11 +139,9 @@ public class NewVacancyActivity extends AppCompatActivity {
                 description = et_jobDescription.getText().toString().trim();
                 if(!TextUtils.isEmpty(title)&&!TextUtils.isEmpty(description)){
                     if(extras != null){
-                        setVacancy(uId, userName, photoUrl, vTitle, vDescription, vDate, vId);
-                        System.out.println("Here is");
+                        setVacancy(uId, uName, photoUrl, title, description, vDate, vId);
                     }
                     else{
-                        System.out.println("Here is also");
                         createNewVacancy(title, description, date, userId, userName, userPhoto);
                     }
                 }
@@ -194,22 +192,10 @@ public class NewVacancyActivity extends AppCompatActivity {
         builder.create().show();
     }
 
-    private void setVacancy(String uId, String userName, String photoUrl, final String vTitle, final String vDescription, String vDate, String vId){
-        System.out.println(vId+"HELLLLLLLLLOOOO"+uId);
+    private void setVacancy(String uId, String userName, String photoUrl, String vTitle, String vDescription, String vDate, String vId){
         Vacancy vacancy = new Vacancy(uId, userName, photoUrl, vTitle, vDescription, vDate, vId);
-//        Map map = new HashMap();
-//        map.put("userId", uId);
-//        map.put("userName", userName);
-//        map.put("imgUrl", photoUrl);
-//        map.put("vacancyTitle", vTitle);
-//        map.put("vacancyDescription", vDescription);
-//        map.put("vacancyDate", vDate);
-//        map.put("vacancyId", vId);
-
-        System.out.println(uId+userName+photoUrl+vTitle+vDescription+vDate+vId);
-        mReferenceVacancy.child(uId).child(vId).child("vacancyDescription").setValue(vDescription);
-        //System.out.println("UID"+uId+vId);
-        //sendToHR(vId,vacancy);
+        mReferenceVacancy.child(uId).child(vId).setValue(vacancy);
+        sendToHR(vId,vacancy);
 
         et_jobDescription.setText("");
         et_jobTitle.setText("");
@@ -220,7 +206,6 @@ public class NewVacancyActivity extends AppCompatActivity {
                                   final String userId, String userName, String userPhoto){
         String vacancyId = mReferenceVacancy.push().getKey();
         Vacancy vacancy = new Vacancy(userId, userName, userPhoto, title, description, date, vacancyId);
-        System.out.println(userId+userName+userPhoto+title);
         mReferenceVacancy.child(userId).child(vacancyId).setValue(vacancy);
         sendToHR(vacancyId, vacancy);
 

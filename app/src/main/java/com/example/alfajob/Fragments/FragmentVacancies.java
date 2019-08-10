@@ -28,6 +28,7 @@ import com.example.alfajob.Activities.ApplyCVActivity;
 import com.example.alfajob.Activities.NewVacancyActivity;
 import com.example.alfajob.Adapter.RVAdapterVacancy;
 import com.example.alfajob.Interface.OnItemClickListener;
+import com.example.alfajob.Objects.User;
 import com.example.alfajob.Objects.Vacancy;
 import com.example.alfajob.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,7 +50,7 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
     private RVAdapterVacancy adapterVacancy;
 
     private FirebaseDatabase mDatabase;
-    private DatabaseReference mReferenceVacancy;
+    private DatabaseReference mReferenceVacancy, mReferenceUsers;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
 
@@ -67,6 +68,7 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
         //DB
         mDatabase = FirebaseDatabase.getInstance();
         mReferenceVacancy = mDatabase.getReference("vacancy");
+        mReferenceUsers = mDatabase.getReference("users");
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -171,7 +173,7 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(getActivity() !=null){
-            getActivity().setTitle("Vacancies");
+            getActivity().setTitle("Вакансии");
         }
 
     }
@@ -191,17 +193,29 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
 
     private void  removeVacancy(int position){
         mReferenceVacancy.child(firebaseUser.getUid()).child(vacancyList.get(position).getVacancyId()).removeValue();
+        removeFromHR(vacancyList.get(position).getVacancyId());
+    }
+
+    private void removeFromHR(final String vacancyId){
+        mReferenceUsers.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap: dataSnapshot.getChildren()){
+                    User user = snap.getValue(User.class);
+                    if(user.getUserEmail().equals("recruiteralfabank@gmail.com")){
+                        String hrId = user.getUserId();
+                        mReferenceVacancy.child(hrId).child(vacancyId).removeValue();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void viewVacancy(int position){
-        //DIALOG
-//        dialogView = new Dialog(getContext());
-//        dialogView.setContentView(R.layout.dialog_vacancy);
-//
-//        if(dialogView.getWindow() != null){
-//            dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        }
-//
         Intent intent = new Intent(getContext(), NewVacancyActivity.class);
 
         String strVacancyId = vacancyList.get(position).getVacancyId();
@@ -221,33 +235,12 @@ public class FragmentVacancies extends Fragment implements OnItemClickListener {
         intent.putExtra("PHOTO URL", photoUrl);
 
         startActivity(intent);
-
-//        TextView tv_titlle = dialogView.findViewById(R.id.tv_title_dialog);
-//        TextView tv_date = dialogView.findViewById(R.id.tv_date_dialog);
-//        TextView tv_description = dialogView.findViewById(R.id.tv_dialog_description);
-//
-//        Button btn_publish = dialogView.findViewById(R.id.btn_publish_dialog);
-//        Button btn_cancel = dialogView.findViewById(R.id.btn_cancel_dialog);
-//
-//        tv_titlle.setText(vacancyList.get(position).getVacancyTitle());
-//        tv_date.setText(vacancyList.get(position).getVacancyDate());
-//        tv_description.setText(vacancyList.get(position).getVacancyDescription());
-//        dialogView.show();
-//
-//        btn_cancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialogView.dismiss();
-//            }
-//        });
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_search){
-            //TODO
             return true;
         }
 
